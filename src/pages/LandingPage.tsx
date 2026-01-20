@@ -241,7 +241,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToLogin }) => {
               mb: 2,
             }}
           >
-            7つの主要機能
+            6つの主要機能
           </Typography>
           <Typography
             variant="body1"
@@ -264,27 +264,28 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToLogin }) => {
                 alignItems: 'center',
               }}
             >
+              <Box
+                sx={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  borderRadius: 2,
+                  p: 3,
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+                }}
+              >
                 <Box
                   sx={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    borderRadius: 2,
-                    p: 3,
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+                    height: 300,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#F6F6F6',
+                    borderRadius: 1,
                   }}
                 >
-                  <Box
-                    sx={{
-                      height: 300,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: '#F6F6F6',
-                      borderRadius: 1,
-                    }}
-                  >
-                    <RequestQuoteIcon sx={{ fontSize: 120, color: '#0078C8' }} />
-                  </Box>
+                  <RequestQuoteIcon sx={{ fontSize: 120, color: '#0078C8' }} />
                 </Box>
+              </Box>
+              <Box>
                 <Box
                   sx={{
                     display: 'inline-block',
@@ -656,88 +657,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToLogin }) => {
             </Box>
           </Box>
 
-          {/* 機能6: 工程管理 */}
-          <Box sx={{ mb: 12 }}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                gap: 6,
-                alignItems: 'center',
-              }}
-            >
-              <Box sx={{ order: { xs: 1, md: 2 } }}>
-                <Box
-                  sx={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    borderRadius: 2,
-                    p: 3,
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      height: 300,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: '#F6F6F6',
-                      borderRadius: 1,
-                    }}
-                  >
-                    <ScheduleIcon sx={{ fontSize: 120, color: '#0078C8' }} />
-                  </Box>
-                </Box>
-              </Box>
-              <Box sx={{ order: { xs: 2, md: 1 } }}>
-                <Box
-                  sx={{
-                    display: 'inline-block',
-                    backgroundColor: '#0078C8',
-                    color: '#FFFFFF',
-                    px: 2,
-                    py: 0.5,
-                    borderRadius: 1,
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    mb: 2,
-                  }}
-                >
-                  機能06
-                </Box>
-                <Typography
-                  variant="h4"
-                  sx={{ color: '#FFFFFF', fontWeight: 700, mb: 3 }}
-                >
-                  工程管理
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 3, lineHeight: 1.8 }}
-                >
-                  ガントチャートで工程を可視化。
-                  遅延を早期発見し、スケジュール通りの完工を実現します。
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                  {[
-                    'ガントチャート表示',
-                    '進捗状況の可視化',
-                    '遅延アラート機能',
-                    'カレンダー連携',
-                  ].map((item, i) => (
-                    <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <CheckCircleIcon sx={{ color: '#95CCC5', fontSize: 20 }} />
-                      <Typography sx={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-                        {item}
-                      </Typography>
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-
-          {/* 機能7: 顧客分析・営業支援 */}
+          {/* 機能6: 顧客分析・営業支援 */}
           <Box>
             <Box
               sx={{
@@ -784,7 +704,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToLogin }) => {
                     mb: 2,
                   }}
                 >
-                  機能07
+                  機能06
                 </Box>
                 <Typography
                   variant="h4"

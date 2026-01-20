@@ -283,7 +283,7 @@ const Dashboard: React.FC = () => {
           />
           <StatCard
             title="総予算"
-            value="¥520M"
+            value="5.2億円"
             icon={<TrendingUp />}
             color="#95CCC5"
           />
