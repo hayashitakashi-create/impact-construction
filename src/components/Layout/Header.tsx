@@ -101,7 +101,6 @@ const settingsMenuItems = [
   { label: 'ワークフローテンプレート登録', path: '/settings/workflow-template' },
   { label: '会計ソフト連携設定', path: '/settings/accounting-integration' },
   { label: '原価登録', path: '/settings/cost' },
-  { label: '会計登録情報設定', path: '/settings/accounting-info' },
 ];
 
 const userMenuItems = [
