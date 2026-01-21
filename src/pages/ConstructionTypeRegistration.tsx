@@ -33,7 +33,7 @@ import {
   ExpandMore as ExpandMoreIcon,
   Close as CloseIcon,
 } from '@mui/icons-material';
-import { useRegistration, ConstructionType } from '../contexts/RegistrationContext';
+import { useRegistration } from '../contexts/RegistrationContext';
 
 const ConstructionTypeRegistration: React.FC = () => {
   const { constructionTypes, setConstructionTypes } = useRegistration();
