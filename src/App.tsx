@@ -17,11 +17,20 @@ import BuildingUsageRegistration from './pages/BuildingUsageRegistration';
 import ClientRegistration from './pages/ClientRegistration';
 import UserRegistration from './pages/UserRegistration';
 import CompanyRegistration from './pages/CompanyRegistration';
+import SubcontractorBulkRegistration from './pages/SubcontractorBulkRegistration';
+import SubcontractorRegistration from './pages/SubcontractorRegistration';
+import WorkTypeRegistration from './pages/WorkTypeRegistration';
+import MaterialRegistration from './pages/MaterialRegistration';
+import LeaseItemRegistration from './pages/LeaseItemRegistration';
+import CommonTemporarySettings from './pages/CommonTemporarySettings';
+import SiteExpenseSettings from './pages/SiteExpenseSettings';
+import ScreenPermissionRegistration from './pages/ScreenPermissionRegistration';
+import ScreenPermissionTemplateRegistration from './pages/ScreenPermissionTemplateRegistration';
 import { RegistrationProvider } from './contexts/RegistrationContext';
 
 function App() {
   // LPページを一時的に非表示：後で表示する場合は 'dashboard' を 'landing' に戻す
-  const [currentPage, setCurrentPage] = React.useState<'landing' | 'login' | 'dashboard' | 'construction-list' | 'construction-registration' | 'construction-detail' | 'estimate-list' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company'>('dashboard');
+  const [currentPage, setCurrentPage] = React.useState<'landing' | 'login' | 'dashboard' | 'construction-list' | 'construction-registration' | 'construction-detail' | 'estimate-list' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template'>('dashboard');
   const [selectedConstructionId, setSelectedConstructionId] = React.useState<number | null>(null);
   const [editMode, setEditMode] = React.useState<boolean>(false);
 
@@ -97,7 +106,7 @@ function App() {
             component="main"
             sx={{
               flexGrow: 1,
-              bgcolor: (currentPage === 'construction-registration' || currentPage === 'construction-list' || currentPage === 'construction-detail' || currentPage === 'estimate-list' || currentPage === 'construction-category' || currentPage === 'construction-type' || currentPage === 'building-usage' || currentPage === 'client' || currentPage === 'user' || currentPage === 'company') ? '#F6F6F6' : '#FFFFFF',
+              bgcolor: (currentPage === 'construction-registration' || currentPage === 'construction-list' || currentPage === 'construction-detail' || currentPage === 'estimate-list' || currentPage === 'construction-category' || currentPage === 'construction-type' || currentPage === 'building-usage' || currentPage === 'client' || currentPage === 'user' || currentPage === 'company' || currentPage === 'subcontractor-bulk' || currentPage === 'subcontractor' || currentPage === 'work-type' || currentPage === 'material' || currentPage === 'lease-item' || currentPage === 'common-temporary' || currentPage === 'site-expense' || currentPage === 'screen-permission' || currentPage === 'screen-permission-template') ? '#F6F6F6' : '#FFFFFF',
               mt: '56px', // ヘッダーの高さ分のマージン
             }}
           >
@@ -130,6 +139,15 @@ function App() {
             {currentPage === 'client' && <ClientRegistration />}
             {currentPage === 'user' && <UserRegistration />}
             {currentPage === 'company' && <CompanyRegistration />}
+            {currentPage === 'subcontractor-bulk' && <SubcontractorBulkRegistration />}
+            {currentPage === 'subcontractor' && <SubcontractorRegistration />}
+            {currentPage === 'work-type' && <WorkTypeRegistration />}
+            {currentPage === 'material' && <MaterialRegistration />}
+            {currentPage === 'lease-item' && <LeaseItemRegistration />}
+            {currentPage === 'common-temporary' && <CommonTemporarySettings />}
+            {currentPage === 'site-expense' && <SiteExpenseSettings />}
+            {currentPage === 'screen-permission' && <ScreenPermissionRegistration />}
+            {currentPage === 'screen-permission-template' && <ScreenPermissionTemplateRegistration />}
           </Box>
           <Footer />
         </Box>

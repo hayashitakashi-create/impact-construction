@@ -134,7 +134,7 @@ const allMenuItems: SearchableMenuItem[] = [
 ];
 
 interface HeaderProps {
-  onNavigate?: (page: 'landing' | 'login' | 'dashboard' | 'construction-list' | 'construction-registration' | 'construction-detail' | 'estimate-list' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company') => void;
+  onNavigate?: (page: 'landing' | 'login' | 'dashboard' | 'construction-list' | 'construction-registration' | 'construction-detail' | 'estimate-list' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
@@ -282,7 +282,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
       }
     } else if (path === '/settings/work-type') {
       if (onNavigate) {
-        onNavigate('construction-type');
+        onNavigate('work-type');
       }
     } else if (path === '/settings/building-usage') {
       if (onNavigate) {
@@ -295,6 +295,38 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
     } else if (path === '/settings/company') {
       if (onNavigate) {
         onNavigate('company');
+      }
+    } else if (path === '/settings/subcontractor-bulk') {
+      if (onNavigate) {
+        onNavigate('subcontractor-bulk');
+      }
+    } else if (path === '/settings/subcontractor') {
+      if (onNavigate) {
+        onNavigate('subcontractor');
+      }
+    } else if (path === '/settings/material') {
+      if (onNavigate) {
+        onNavigate('material');
+      }
+    } else if (path === '/settings/lease-item') {
+      if (onNavigate) {
+        onNavigate('lease-item');
+      }
+    } else if (path === '/settings/common-temporary') {
+      if (onNavigate) {
+        onNavigate('common-temporary');
+      }
+    } else if (path === '/settings/site-expense') {
+      if (onNavigate) {
+        onNavigate('site-expense');
+      }
+    } else if (path === '/settings/screen-permission') {
+      if (onNavigate) {
+        onNavigate('screen-permission');
+      }
+    } else if (path === '/settings/screen-permission-template') {
+      if (onNavigate) {
+        onNavigate('screen-permission-template');
       }
     }
   };
@@ -339,13 +371,29 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
     } else if (path === '/settings/construction-category') {
       if (onNavigate) onNavigate('construction-category');
     } else if (path === '/settings/work-type') {
-      if (onNavigate) onNavigate('construction-type');
+      if (onNavigate) onNavigate('work-type');
     } else if (path === '/settings/building-usage') {
       if (onNavigate) onNavigate('building-usage');
     } else if (path === '/settings/client') {
       if (onNavigate) onNavigate('client');
     } else if (path === '/settings/company') {
       if (onNavigate) onNavigate('company');
+    } else if (path === '/settings/subcontractor-bulk') {
+      if (onNavigate) onNavigate('subcontractor-bulk');
+    } else if (path === '/settings/subcontractor') {
+      if (onNavigate) onNavigate('subcontractor');
+    } else if (path === '/settings/material') {
+      if (onNavigate) onNavigate('material');
+    } else if (path === '/settings/lease-item') {
+      if (onNavigate) onNavigate('lease-item');
+    } else if (path === '/settings/common-temporary') {
+      if (onNavigate) onNavigate('common-temporary');
+    } else if (path === '/settings/site-expense') {
+      if (onNavigate) onNavigate('site-expense');
+    } else if (path === '/settings/screen-permission') {
+      if (onNavigate) onNavigate('screen-permission');
+    } else if (path === '/settings/screen-permission-template') {
+      if (onNavigate) onNavigate('screen-permission-template');
     }
   };
 
