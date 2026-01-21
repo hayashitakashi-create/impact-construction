@@ -11,30 +11,33 @@ import ConstructionRegistration from './pages/ConstructionRegistration';
 import ConstructionCategoryRegistration from './pages/ConstructionCategoryRegistration';
 import ConstructionTypeRegistration from './pages/ConstructionTypeRegistration';
 import BuildingUsageRegistration from './pages/BuildingUsageRegistration';
+import ClientRegistration from './pages/ClientRegistration';
+import UserRegistration from './pages/UserRegistration';
 import { RegistrationProvider } from './contexts/RegistrationContext';
 
 function App() {
-  const [currentPage, setCurrentPage] = React.useState<'landing' | 'login' | 'dashboard' | 'construction-registration' | 'construction-category' | 'construction-type' | 'building-usage'>('landing');
+  // LPページを一時的に非表示：後で表示する場合は 'dashboard' を 'landing' に戻す
+  const [currentPage, setCurrentPage] = React.useState<'landing' | 'login' | 'dashboard' | 'construction-registration' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user'>('dashboard');
 
-  // LPページを表示
-  if (currentPage === 'landing') {
-    return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <LandingPage onNavigateToLogin={() => setCurrentPage('login')} />
-      </ThemeProvider>
-    );
-  }
+  // LPページを表示（一時的にコメントアウト）
+  // if (currentPage === 'landing') {
+  //   return (
+  //     <ThemeProvider theme={theme}>
+  //       <CssBaseline />
+  //       <LandingPage onNavigateToLogin={() => setCurrentPage('login')} />
+  //     </ThemeProvider>
+  //   );
+  // }
 
-  // ログイン画面を表示
-  if (currentPage === 'login') {
-    return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Login onLogin={() => setCurrentPage('dashboard')} />
-      </ThemeProvider>
-    );
-  }
+  // ログイン画面を表示（一時的にコメントアウト）
+  // if (currentPage === 'login') {
+  //   return (
+  //     <ThemeProvider theme={theme}>
+  //       <CssBaseline />
+  //       <Login onLogin={() => setCurrentPage('dashboard')} />
+  //     </ThemeProvider>
+  //   );
+  // }
 
   // ダッシュボードまたは工事登録を表示（ログイン後）
   return (
@@ -47,7 +50,7 @@ function App() {
             component="main"
             sx={{
               flexGrow: 1,
-              bgcolor: (currentPage === 'construction-registration' || currentPage === 'construction-category' || currentPage === 'construction-type' || currentPage === 'building-usage') ? '#F6F6F6' : '#FFFFFF',
+              bgcolor: (currentPage === 'construction-registration' || currentPage === 'construction-category' || currentPage === 'construction-type' || currentPage === 'building-usage' || currentPage === 'client' || currentPage === 'user') ? '#F6F6F6' : '#FFFFFF',
               mt: '56px', // ヘッダーの高さ分のマージン
             }}
           >
@@ -56,6 +59,8 @@ function App() {
             {currentPage === 'construction-category' && <ConstructionCategoryRegistration />}
             {currentPage === 'construction-type' && <ConstructionTypeRegistration />}
             {currentPage === 'building-usage' && <BuildingUsageRegistration />}
+            {currentPage === 'client' && <ClientRegistration />}
+            {currentPage === 'user' && <UserRegistration />}
           </Box>
           <Footer />
         </Box>

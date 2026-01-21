@@ -1,0 +1,544 @@
+import React, { useState } from 'react';
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  TextField,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
+import {
+  Settings as SettingsIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Add as AddIcon,
+  ExpandMore as ExpandMoreIcon,
+  Close as CloseIcon,
+  Email as EmailIcon,
+  Phone as PhoneIcon,
+} from '@mui/icons-material';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { useRegistration, User } from '../contexts/RegistrationContext';
+
+const UserRegistration: React.FC = () => {
+  const { users, setUsers } = useRegistration();
+
+  const [searchExpanded, setSearchExpanded] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openLimitDialog, setOpenLimitDialog] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [newUser, setNewUser] = useState({
+    userId: '',
+    lastName: '',
+    firstName: '',
+    email: '',
+    permission: 'システム管理者',
+    memo: '',
+  });
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+  });
+
+  const [passwordError, setPasswordError] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({
+    lastName: false,
+    firstName: false,
+    email: false,
+  });
+
+  // ユーザー登録上限数（当月）
+  const maxUsers = 10;
+  const currentUserCount = users.length;
+
+  const handleOpenDialog = () => {
+    // ユーザー登録上限チェック
+    if (currentUserCount >= maxUsers) {
+      setOpenLimitDialog(true);
+      return;
+    }
+
+    setOpenDialog(true);
+    setEditingUser(null);
+    setNewUser({
+      userId: '',
+      lastName: '',
+      firstName: '',
+      email: '',
+      permission: 'システム管理者',
+      memo: '',
+    });
+    setPasswordData({
+      currentPassword: '',
+      newPassword: '',
+    });
+    setPasswordError(false);
+    setValidationErrors({
+      lastName: false,
+      firstName: false,
+      email: false,
+    });
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setEditingUser(null);
+    setPasswordData({
+      currentPassword: '',
+      newPassword: '',
+    });
+    setPasswordError(false);
+  };
+
+  const handleEditUser = (user: User) => {
+    setEditingUser(user);
+    setNewUser({
+      userId: user.userId,
+      lastName: user.lastName,
+      firstName: user.firstName,
+      email: user.email,
+      permission: user.permission,
+      memo: user.memo,
+    });
+    setPasswordData({
+      currentPassword: '',
+      newPassword: '',
+    });
+    setPasswordError(false);
+    setOpenDialog(true);
+  };
+
+  const handleSaveUser = () => {
+    // パスワード変更時のバリデーション（編集時のみ）
+    if (editingUser && passwordData.currentPassword && !passwordData.newPassword) {
+      setPasswordError(true);
+      return;
+    }
+
+    // 新規登録時のバリデーション
+    if (!editingUser) {
+      const errors = {
+        lastName: !newUser.lastName,
+        firstName: !newUser.firstName,
+        email: !newUser.email,
+      };
+      setValidationErrors(errors);
+
+      if (errors.lastName || errors.firstName || errors.email) {
+        return;
+      }
+    }
+
+    if (editingUser) {
+      // 編集
+      setUsers(users.map(u =>
+        u.id === editingUser.id
+          ? { ...u, ...newUser }
+          : u
+      ));
+    } else {
+      // 新規追加
+      const newId = Math.max(...users.map(u => u.id), 0) + 1;
+      setUsers([...users, { id: newId, ...newUser }]);
+    }
+    handleCloseDialog();
+  };
+
+  const handleDeleteUser = (id: number) => {
+    setUsers(users.filter(u => u.id !== id));
+  };
+
+  return (
+    <Box sx={{ bgcolor: '#F6F6F6', minHeight: 'calc(100vh - 56px)', py: 3 }}>
+      <Container maxWidth="xl">
+        {/* ヘッダー */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box
+              sx={{
+                bgcolor: '#0078C8',
+                borderRadius: '50%',
+                width: 48,
+                height: 48,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: 2,
+              }}
+            >
+              <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
+            </Box>
+            <Typography variant="h4" sx={{ color: '#1C2026', fontWeight: 600 }}>
+              ユーザー登録
+            </Typography>
+          </Box>
+
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleOpenDialog}
+            sx={{
+              bgcolor: '#42A5F5',
+              color: '#FFFFFF',
+              '&:hover': { bgcolor: '#1E88E5' },
+            }}
+          >
+            新規登録
+          </Button>
+        </Box>
+
+        {/* ユーザー登録上限数 */}
+        <Box sx={{ mb: 2, display: 'flex', gap: 3 }}>
+          <Typography sx={{ color: '#1C2026', fontSize: '0.875rem' }}>
+            ユーザー登録上限数（当月）：{maxUsers}人
+          </Typography>
+          <Typography sx={{ color: '#1C2026', fontSize: '0.875rem' }}>
+            登録ユーザー数（当月）：{currentUserCount}人
+          </Typography>
+        </Box>
+
+        {/* 検索条件 */}
+        <Accordion
+          expanded={searchExpanded}
+          onChange={() => setSearchExpanded(!searchExpanded)}
+          sx={{ mb: 2, bgcolor: '#E0E0E0' }}
+        >
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography sx={{ fontWeight: 600 }}>
+              検索条件 ({searchExpanded ? '閉じる' : '開く'})
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <TextField label="利用者ID" size="small" />
+              <TextField label="姓" size="small" />
+              <TextField label="名" size="small" />
+              <TextField label="Email" size="small" />
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+
+        {/* テーブル */}
+        <TableContainer sx={{ bgcolor: '#FFFFFF' }}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ bgcolor: '#B0BEC5' }}>
+                <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 80 }}>修正</TableCell>
+                <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 80 }}>削除</TableCell>
+                <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>利用者ID</TableCell>
+                <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>姓</TableCell>
+                <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>名</TableCell>
+                <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>Email</TableCell>
+                <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>権限</TableCell>
+                <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>メモ</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>
+                    <IconButton
+                      onClick={() => handleEditUser(user)}
+                      sx={{ color: '#42A5F5' }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={() => handleDeleteUser(user.id)}
+                      sx={{ color: '#42A5F5' }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell>
+                    <Typography>{user.userId}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography>{user.lastName}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography>{user.firstName}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography>{user.email}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography>{user.permission}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography>{user.memo}</Typography>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        {/* 新規登録・編集ダイアログ */}
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              {editingUser ? '登録内容修正' : 'ユーザー新規登録'}
+            </Typography>
+            <IconButton onClick={handleCloseDialog} size="small">
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            {editingUser ? (
+              <>
+                <Typography sx={{ mb: 1, color: '#666666', fontSize: '0.875rem' }}>
+                  項目を修正し、よろしければ「保存」を押してください。
+                </Typography>
+                <Typography sx={{ mb: 3, color: '#666666', fontSize: '0.875rem' }}>
+                  パスワードを変更する場合のみ、現在のパスワードと新しいパスワードを入力してください。
+                </Typography>
+              </>
+            ) : (
+              <Typography sx={{ mb: 3, color: '#666666', fontSize: '0.875rem' }}>
+                項目を入力し、よろしければ「招待メールを送る」を押してください。
+              </Typography>
+            )}
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {!editingUser && (
+                <TextField
+                  fullWidth
+                  label="利用者ID"
+                  value={newUser.userId}
+                  onChange={(e) => setNewUser({ ...newUser, userId: e.target.value })}
+                />
+              )}
+              <Box>
+                <TextField
+                  fullWidth
+                  label="姓"
+                  value={newUser.lastName}
+                  onChange={(e) => {
+                    setNewUser({ ...newUser, lastName: e.target.value });
+                    setValidationErrors({ ...validationErrors, lastName: false });
+                  }}
+                  error={validationErrors.lastName}
+                />
+                {validationErrors.lastName && !editingUser && (
+                  <Typography sx={{ color: '#D32F2F', fontSize: '0.75rem', mt: 0.5 }}>
+                    必須です
+                  </Typography>
+                )}
+              </Box>
+              <Box>
+                <TextField
+                  fullWidth
+                  label="名"
+                  value={newUser.firstName}
+                  onChange={(e) => {
+                    setNewUser({ ...newUser, firstName: e.target.value });
+                    setValidationErrors({ ...validationErrors, firstName: false });
+                  }}
+                  error={validationErrors.firstName}
+                />
+                {validationErrors.firstName && !editingUser && (
+                  <Typography sx={{ color: '#D32F2F', fontSize: '0.75rem', mt: 0.5 }}>
+                    必須です
+                  </Typography>
+                )}
+              </Box>
+              <Box>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  type="email"
+                  value={newUser.email}
+                  onChange={(e) => {
+                    setNewUser({ ...newUser, email: e.target.value });
+                    setValidationErrors({ ...validationErrors, email: false });
+                  }}
+                  error={validationErrors.email}
+                />
+                {validationErrors.email && !editingUser && (
+                  <Typography sx={{ color: '#D32F2F', fontSize: '0.75rem', mt: 0.5 }}>
+                    必須です
+                  </Typography>
+                )}
+              </Box>
+
+              {!editingUser && (
+                <FormControl fullWidth>
+                  <InputLabel>権限</InputLabel>
+                  <Select
+                    value={newUser.permission}
+                    label="権限"
+                    onChange={(e) => setNewUser({ ...newUser, permission: e.target.value })}
+                  >
+                    <MenuItem value="システム管理者">システム管理者</MenuItem>
+                    <MenuItem value="業作システム管理者">業作システム管理者</MenuItem>
+                    <MenuItem value="業作一営業担当者">業作一営業担当者</MenuItem>
+                    <MenuItem value="一般ユーザー(デフォルト)">一般ユーザー(デフォルト)</MenuItem>
+                  </Select>
+                </FormControl>
+              )}
+
+              <TextField
+                fullWidth
+                label="メモ"
+                value={newUser.memo}
+                onChange={(e) => setNewUser({ ...newUser, memo: e.target.value })}
+              />
+
+              {editingUser && (
+                <>
+                  <TextField
+                    fullWidth
+                    label="現在のパスワード"
+                    type="password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) => {
+                      setPasswordData({ ...passwordData, currentPassword: e.target.value });
+                      setPasswordError(false);
+                    }}
+                    sx={{ bgcolor: '#F5F5F5' }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="新しいパスワード"
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => {
+                      setPasswordData({ ...passwordData, newPassword: e.target.value });
+                      setPasswordError(false);
+                    }}
+                    placeholder="新しいパスワード"
+                    error={passwordError}
+                    helperText={passwordError ? '新しいパスワードを入力してください' : ''}
+                    FormHelperTextProps={{
+                      sx: { color: '#D32F2F' }
+                    }}
+                  />
+                </>
+              )}
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 2 }}>
+            <Button
+              onClick={handleCloseDialog}
+              sx={{
+                bgcolor: '#42A5F5',
+                color: '#FFFFFF',
+                '&:hover': { bgcolor: '#1E88E5' },
+              }}
+            >
+              キャンセル
+            </Button>
+            <Button
+              onClick={handleSaveUser}
+              variant="contained"
+              sx={{
+                bgcolor: '#42A5F5',
+                color: '#FFFFFF',
+                '&:hover': { bgcolor: '#1E88E5' },
+              }}
+            >
+              {editingUser ? '保存' : '招待メールを送る'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* ユーザー登録上限アラートダイアログ */}
+        <Dialog
+          open={openLimitDialog}
+          onClose={() => setOpenLimitDialog(false)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#F5F5F5' }}>
+            <Typography variant="h6" sx={{ fontWeight: 600, color: '#1C2026' }}>
+              お問い合わせ
+            </Typography>
+            <IconButton onClick={() => setOpenLimitDialog(false)} size="small">
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent sx={{ mt: 2 }}>
+            <Typography sx={{ mb: 3, color: '#666666', fontSize: '0.9rem' }}>
+              ユーザー登録数が上限に達しています。
+            </Typography>
+            <Typography sx={{ mb: 3, color: '#666666', fontSize: '0.9rem' }}>
+              追加のユーザー登録をご希望の場合は、下記までお問い合わせください。
+            </Typography>
+
+            <Box sx={{ bgcolor: '#F9F9F9', border: '1px solid #E0E0E0', borderRadius: 1, p: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <EmailIcon sx={{ color: '#0078C8', mr: 1.5, fontSize: 24 }} />
+                <Box>
+                  <Typography sx={{ fontSize: '0.875rem', color: '#666666', mb: 0.5 }}>
+                    Email
+                  </Typography>
+                  <Typography sx={{ fontSize: '1rem', color: '#1C2026', fontWeight: 500 }}>
+                    impact-cs@kawata.org
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <PhoneIcon sx={{ color: '#0078C8', mr: 1.5, fontSize: 24 }} />
+                <Box>
+                  <Typography sx={{ fontSize: '0.875rem', color: '#666666', mb: 0.5 }}>
+                    電話番号
+                  </Typography>
+                  <Typography sx={{ fontSize: '1rem', color: '#1C2026', fontWeight: 500 }}>
+                    055-987-5553
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ pl: 5 }}>
+                <Typography sx={{ fontSize: '0.875rem', color: '#666666' }}>
+                  受付時間　平日 9:00～12:00 13:00～18:00
+                </Typography>
+              </Box>
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 2 }}>
+            <Button
+              onClick={() => setOpenLimitDialog(false)}
+              variant="contained"
+              sx={{
+                bgcolor: '#42A5F5',
+                color: '#FFFFFF',
+                '&:hover': { bgcolor: '#1E88E5' },
+              }}
+            >
+              閉じる
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Container>
+    </Box>
+  );
+};
+
+export default UserRegistration;

@@ -23,6 +23,31 @@ export interface BuildingUsage {
   name: string;
 }
 
+// 発注者の型定義
+export interface Client {
+  id: number;
+  corporateName: string;
+  individualName: string;
+  furigana: string;
+  postalCode: string;
+  address: string;
+  email: string;
+  phone: string;
+  fax: string;
+  rating: string;
+}
+
+// ユーザーの型定義
+export interface User {
+  id: number;
+  userId: string;
+  lastName: string;
+  firstName: string;
+  email: string;
+  permission: string;
+  memo: string;
+}
+
 // コンテキストの型定義
 interface RegistrationContextType {
   categories: ConstructionCategory[];
@@ -31,6 +56,10 @@ interface RegistrationContextType {
   setConstructionTypes: (types: ConstructionType[]) => void;
   buildingUsages: BuildingUsage[];
   setBuildingUsages: (usages: BuildingUsage[]) => void;
+  clients: Client[];
+  setClients: (clients: Client[]) => void;
+  users: User[];
+  setUsers: (users: User[]) => void;
 }
 
 // コンテキストの作成
@@ -52,6 +81,17 @@ export const RegistrationProvider: React.FC<{ children: ReactNode }> = ({ childr
     { id: 6, name: '病院' },
     { id: 7, name: '学校' },
     { id: 8, name: 'ホテル' },
+  ]);
+
+  const [clients, setClients] = useState<Client[]>([
+    { id: 1, corporateName: '', individualName: '鈴木 一郎', furigana: 'すずき いちろう', postalCode: '111-222', address: '静岡県浜松市中区砂山1-1-1', email: '', phone: '053-111-222', fax: '053-222-333', rating: '' },
+    { id: 2, corporateName: '三島市', individualName: '', furigana: 'みしまし', postalCode: '', address: '', email: '', phone: '', fax: '', rating: '' },
+  ]);
+
+  const [users, setUsers] = useState<User[]>([
+    { id: 1, userId: 'dandori_0', lastName: '田中', firstName: '太郎', email: 'tanaka@example.com', permission: 'システム管理者', memo: '営業担当' },
+    { id: 2, userId: 'dandori_1', lastName: '佐藤', firstName: '花子', email: 'sato@example.com', permission: '業作システム管理者', memo: '現場監督' },
+    { id: 3, userId: 'dandori_2', lastName: '鈴木', firstName: '一郎', email: 'suzuki@example.com', permission: '一般ユーザー(デフォルト)', memo: '管理者' },
   ]);
 
   const [constructionTypes, setConstructionTypes] = useState<ConstructionType[]>([
@@ -99,6 +139,10 @@ export const RegistrationProvider: React.FC<{ children: ReactNode }> = ({ childr
         setConstructionTypes,
         buildingUsages,
         setBuildingUsages,
+        clients,
+        setClients,
+        users,
+        setUsers,
       }}
     >
       {children}

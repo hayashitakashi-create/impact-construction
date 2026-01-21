@@ -8,15 +8,34 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  InputAdornment,
 } from '@mui/material';
 import {
   Schedule as ScheduleIcon,
   AccountCircle,
+  Search as SearchIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 
 interface MenuItemType {
   label: string;
   path: string;
+}
+
+// 検索用のメニューアイテム型定義
+interface SearchableMenuItem {
+  label: string;
+  path: string;
+  category: string;
+  keywords?: string[]; // 検索用の追加キーワード
 }
 
 const menuItems: MenuItemType[] = [];
@@ -92,8 +111,30 @@ const userMenuItems = [
   { label: 'ログアウト', path: '/logout' },
 ];
 
+// 全メニューを統合した検索可能なリスト
+const allMenuItems: SearchableMenuItem[] = [
+  // 工事メニュー
+  ...constructionMenuItems.map(item => ({ ...item, category: '工事' })),
+  // 見積メニュー
+  ...quotationMenuItems.map(item => ({ ...item, category: '見積', keywords: ['積算'] })),
+  // 実行予算メニュー
+  ...budgetMenuItems.map(item => ({ ...item, category: '実行予算' })),
+  // 購買発注メニュー
+  ...procurementMenuItems.map(item => ({ ...item, category: '購買発注', keywords: ['はっちゅう', '業者', 'ベンダー'] })),
+  // 出来高管理メニュー
+  ...progressMenuItems.map(item => ({ ...item, category: '出来高管理' })),
+  // 支払管理メニュー
+  ...paymentMenuItems.map(item => ({ ...item, category: '支払管理', keywords: ['入金'] })),
+  // 実行予算管理メニュー
+  ...budgetManagementMenuItems.map(item => ({ ...item, category: '実行予算管理', keywords: ['損益'] })),
+  // その他・設定メニュー
+  ...settingsMenuItems.map(item => ({ ...item, category: 'その他・設定', keywords: ['せってい', 'とうろく'] })),
+  // ユーザーメニュー
+  ...userMenuItems.map(item => ({ ...item, category: 'ユーザー' })),
+];
+
 interface HeaderProps {
-  onNavigate?: (page: 'landing' | 'login' | 'dashboard' | 'construction-registration' | 'construction-category' | 'construction-type' | 'building-usage') => void;
+  onNavigate?: (page: 'landing' | 'login' | 'dashboard' | 'construction-registration' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
@@ -107,6 +148,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
   const [budgetManagementAnchorEl, setBudgetManagementAnchorEl] = React.useState<null | HTMLElement>(null);
   const [settingsAnchorEl, setSettingsAnchorEl] = React.useState<null | HTMLElement>(null);
   const [userMenuAnchorEl, setUserMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  // メニュー検索用の状態
+  const [searchDialogOpen, setSearchDialogOpen] = React.useState(false);
+  const [searchKeyword, setSearchKeyword] = React.useState('');
 
   const handleConstructionClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setConstructionAnchorEl(event.currentTarget);
@@ -217,7 +262,11 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
   const handleSettingsMenuClick = (path: string) => {
     setSelectedMenu(path);
     handleSettingsClose();
-    if (path === '/settings/construction-category') {
+    if (path === '/settings/user') {
+      if (onNavigate) {
+        onNavigate('user');
+      }
+    } else if (path === '/settings/construction-category') {
       if (onNavigate) {
         onNavigate('construction-category');
       }
@@ -228,6 +277,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
     } else if (path === '/settings/building-usage') {
       if (onNavigate) {
         onNavigate('building-usage');
+      }
+    } else if (path === '/settings/client') {
+      if (onNavigate) {
+        onNavigate('client');
       }
     }
   };
@@ -244,6 +297,53 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
     setSelectedMenu(path);
     handleUserMenuClose();
   };
+
+  // メニュー検索のハンドラー
+  const handleSearchDialogOpen = () => {
+    setSearchDialogOpen(true);
+    setSearchKeyword('');
+  };
+
+  const handleSearchDialogClose = () => {
+    setSearchDialogOpen(false);
+    setSearchKeyword('');
+  };
+
+  const handleSearchMenuClick = (path: string) => {
+    setSelectedMenu(path);
+    handleSearchDialogClose();
+
+    // 各メニューパスに応じて遷移処理
+    if (path === '/construction/register') {
+      if (onNavigate) onNavigate('construction-registration');
+    } else if (path === '/settings/user') {
+      if (onNavigate) onNavigate('user');
+    } else if (path === '/settings/construction-category') {
+      if (onNavigate) onNavigate('construction-category');
+    } else if (path === '/settings/work-type') {
+      if (onNavigate) onNavigate('construction-type');
+    } else if (path === '/settings/building-usage') {
+      if (onNavigate) onNavigate('building-usage');
+    } else if (path === '/settings/client') {
+      if (onNavigate) onNavigate('client');
+    }
+  };
+
+  // 検索結果のフィルタリング
+  const filteredMenuItems = React.useMemo(() => {
+    if (!searchKeyword.trim()) {
+      return allMenuItems;
+    }
+
+    const keyword = searchKeyword.toLowerCase().trim();
+    return allMenuItems.filter(item => {
+      const labelMatch = item.label.toLowerCase().includes(keyword);
+      const categoryMatch = item.category.toLowerCase().includes(keyword);
+      const keywordsMatch = item.keywords?.some(kw => kw.toLowerCase().includes(keyword)) || false;
+
+      return labelMatch || categoryMatch || keywordsMatch;
+    });
+  }, [searchKeyword]);
 
   return (
     <AppBar
@@ -851,6 +951,29 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
           </Menu>
         </Box>
 
+        {/* メニュー検索ボタン */}
+        <Button
+          onClick={handleSearchDialogOpen}
+          startIcon={<SearchIcon />}
+          sx={{
+            color: '#FFFFFF',
+            fontSize: '0.875rem',
+            fontWeight: 400,
+            px: 2,
+            py: 0.5,
+            mr: 2,
+            textTransform: 'none',
+            borderRadius: 1,
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.5)',
+            },
+          }}
+        >
+          メニュー検索
+        </Button>
+
         {/* ユーザー情報 */}
         <Box
           sx={{
@@ -921,6 +1044,102 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
             </MenuItem>
           ))}
         </Menu>
+
+        {/* メニュー検索ダイアログ */}
+        <Dialog
+          open={searchDialogOpen}
+          onClose={handleSearchDialogClose}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            sx: {
+              maxHeight: '80vh',
+            },
+          }}
+        >
+          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              メニュー検索
+            </Typography>
+            <IconButton onClick={handleSearchDialogClose} size="small">
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent sx={{ pt: 0 }}>
+            <TextField
+              autoFocus
+              fullWidth
+              placeholder="キーワードを入力してメニューを検索"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              sx={{ mb: 2 }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: '#666666' }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            {searchKeyword && filteredMenuItems.length === 0 && (
+              <Box sx={{ p: 4, textAlign: 'center' }}>
+                <Typography sx={{ color: '#999999' }}>
+                  「{searchKeyword}」に一致するメニューが見つかりませんでした
+                </Typography>
+              </Box>
+            )}
+
+            {filteredMenuItems.length > 0 && (
+              <List sx={{ maxHeight: '50vh', overflow: 'auto' }}>
+                {filteredMenuItems.map((item, index) => (
+                  <ListItem key={`${item.path}-${index}`} disablePadding>
+                    <ListItemButton
+                      onClick={() => handleSearchMenuClick(item.path)}
+                      sx={{
+                        borderRadius: 1,
+                        mb: 0.5,
+                        '&:hover': {
+                          bgcolor: '#E3F2FD',
+                        },
+                      }}
+                    >
+                      <ListItemText
+                        primary={item.label}
+                        secondary={item.category}
+                        primaryTypographyProps={{
+                          fontSize: '0.875rem',
+                          fontWeight: 500,
+                        }}
+                        secondaryTypographyProps={{
+                          fontSize: '0.75rem',
+                          color: '#666666',
+                        }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            )}
+
+            {!searchKeyword && (
+              <Box sx={{ p: 2, bgcolor: '#F5F5F5', borderRadius: 1 }}>
+                <Typography sx={{ fontSize: '0.875rem', color: '#666666', mb: 1 }}>
+                  検索のヒント:
+                </Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: '#999999' }}>
+                  • メニュー名で検索: 「工事」「見積」「ユーザー」など
+                </Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: '#999999' }}>
+                  • カテゴリー名で検索: 「設定」「購買」など
+                </Typography>
+                <Typography sx={{ fontSize: '0.75rem', color: '#999999' }}>
+                  • 一部のキーワードでも検索可能: 「登録」「一覧」など
+                </Typography>
+              </Box>
+            )}
+          </DialogContent>
+        </Dialog>
       </Toolbar>
     </AppBar>
   );
