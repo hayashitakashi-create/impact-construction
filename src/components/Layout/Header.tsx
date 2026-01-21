@@ -72,6 +72,7 @@ const settingsMenuItems = [
   { label: '外注業者登録', path: '/settings/subcontractor' },
   { label: '工事分類登録', path: '/settings/construction-category' },
   { label: '工種登録', path: '/settings/work-type' },
+  { label: '建物用途登録', path: '/settings/building-usage' },
   { label: '資材登録', path: '/settings/material' },
   { label: '社内リース品目登録', path: '/settings/lease-item' },
   { label: '共通仮設費項目設定', path: '/settings/common-temporary' },
@@ -91,7 +92,11 @@ const userMenuItems = [
   { label: 'ログアウト', path: '/logout' },
 ];
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onNavigate?: (page: 'landing' | 'login' | 'dashboard' | 'construction-registration' | 'construction-category' | 'construction-type' | 'building-usage') => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
   const [selectedMenu, setSelectedMenu] = React.useState<string>('');
   const [constructionAnchorEl, setConstructionAnchorEl] = React.useState<null | HTMLElement>(null);
   const [quotationAnchorEl, setQuotationAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -112,8 +117,15 @@ const Header: React.FC = () => {
   };
 
   const handleConstructionMenuClick = (path: string) => {
+    console.log('Menu clicked:', path);
     setSelectedMenu(path);
     handleConstructionClose();
+    if (path === '/construction/register') {
+      console.log('Navigating to construction-registration');
+      if (onNavigate) {
+        onNavigate('construction-registration');
+      }
+    }
   };
 
   const handleQuotationClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -205,6 +217,19 @@ const Header: React.FC = () => {
   const handleSettingsMenuClick = (path: string) => {
     setSelectedMenu(path);
     handleSettingsClose();
+    if (path === '/settings/construction-category') {
+      if (onNavigate) {
+        onNavigate('construction-category');
+      }
+    } else if (path === '/settings/work-type') {
+      if (onNavigate) {
+        onNavigate('construction-type');
+      }
+    } else if (path === '/settings/building-usage') {
+      if (onNavigate) {
+        onNavigate('building-usage');
+      }
+    }
   };
 
   const handleUserMenuClick = (event: React.MouseEvent<HTMLElement>) => {
