@@ -101,6 +101,7 @@ const settingsMenuItems = [
   { label: 'ワークフローテンプレート登録', path: '/settings/workflow-template' },
   { label: '会計ソフト連携設定', path: '/settings/accounting-integration' },
   { label: '原価登録', path: '/settings/cost' },
+  { label: '会社登録情報設定', path: '/settings/company' },
 ];
 
 const userMenuItems = [
@@ -133,7 +134,7 @@ const allMenuItems: SearchableMenuItem[] = [
 ];
 
 interface HeaderProps {
-  onNavigate?: (page: 'landing' | 'login' | 'dashboard' | 'construction-registration' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user') => void;
+  onNavigate?: (page: 'landing' | 'login' | 'dashboard' | 'construction-registration' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
@@ -281,6 +282,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
       if (onNavigate) {
         onNavigate('client');
       }
+    } else if (path === '/settings/company') {
+      if (onNavigate) {
+        onNavigate('company');
+      }
     }
   };
 
@@ -325,6 +330,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
       if (onNavigate) onNavigate('building-usage');
     } else if (path === '/settings/client') {
       if (onNavigate) onNavigate('client');
+    } else if (path === '/settings/company') {
+      if (onNavigate) onNavigate('company');
     }
   };
 

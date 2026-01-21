@@ -13,11 +13,12 @@ import ConstructionTypeRegistration from './pages/ConstructionTypeRegistration';
 import BuildingUsageRegistration from './pages/BuildingUsageRegistration';
 import ClientRegistration from './pages/ClientRegistration';
 import UserRegistration from './pages/UserRegistration';
+import CompanyRegistration from './pages/CompanyRegistration';
 import { RegistrationProvider } from './contexts/RegistrationContext';
 
 function App() {
   // LPページを一時的に非表示：後で表示する場合は 'dashboard' を 'landing' に戻す
-  const [currentPage, setCurrentPage] = React.useState<'landing' | 'login' | 'dashboard' | 'construction-registration' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user'>('dashboard');
+  const [currentPage, setCurrentPage] = React.useState<'landing' | 'login' | 'dashboard' | 'construction-registration' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company'>('dashboard');
 
   // LPページを表示（一時的にコメントアウト）
   // if (currentPage === 'landing') {
@@ -50,7 +51,7 @@ function App() {
             component="main"
             sx={{
               flexGrow: 1,
-              bgcolor: (currentPage === 'construction-registration' || currentPage === 'construction-category' || currentPage === 'construction-type' || currentPage === 'building-usage' || currentPage === 'client' || currentPage === 'user') ? '#F6F6F6' : '#FFFFFF',
+              bgcolor: (currentPage === 'construction-registration' || currentPage === 'construction-category' || currentPage === 'construction-type' || currentPage === 'building-usage' || currentPage === 'client' || currentPage === 'user' || currentPage === 'company') ? '#F6F6F6' : '#FFFFFF',
               mt: '56px', // ヘッダーの高さ分のマージン
             }}
           >
@@ -61,6 +62,7 @@ function App() {
             {currentPage === 'building-usage' && <BuildingUsageRegistration />}
             {currentPage === 'client' && <ClientRegistration />}
             {currentPage === 'user' && <UserRegistration />}
+            {currentPage === 'company' && <CompanyRegistration />}
           </Box>
           <Footer />
         </Box>
