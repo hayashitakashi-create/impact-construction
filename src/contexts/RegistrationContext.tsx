@@ -48,6 +48,33 @@ export interface User {
   memo: string;
 }
 
+// 工事の型定義
+export interface Construction {
+  id: number;
+  orderStatus: string;
+  constructionCategory: string;
+  constructionDivision: string;
+  buildingUsage: string;
+  constructionName: string;
+  clientId: number;
+  prefecture: string;
+  constructionLocation: string;
+  contractPeriodStart: string;
+  contractPeriodEnd: string;
+  plannedPeriodStart: string;
+  plannedPeriodEnd: string;
+  constructionAmount: string;
+  consumptionTax: string;
+  estimatedOrderAmount: string;
+  contractDate: string;
+  deliveryPeriod: string;
+  taxRate: number;
+  siteAgent: string;
+  assignedStaff: string;
+  systemUser: string;
+  salesPerson: string;
+}
+
 // コンテキストの型定義
 interface RegistrationContextType {
   categories: ConstructionCategory[];
@@ -60,6 +87,10 @@ interface RegistrationContextType {
   setClients: (clients: Client[]) => void;
   users: User[];
   setUsers: (users: User[]) => void;
+  companyCode: string;
+  setCompanyCode: (code: string) => void;
+  constructions: Construction[];
+  setConstructions: (constructions: Construction[]) => void;
 }
 
 // コンテキストの作成
@@ -67,6 +98,8 @@ const RegistrationContext = createContext<RegistrationContextType | undefined>(u
 
 // プロバイダーコンポーネント
 export const RegistrationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [companyCode, setCompanyCode] = useState<string>('dandori');
+
   const [categories, setCategories] = useState<ConstructionCategory[]>([
     { id: 1, name: '大工事', type: '大工事', isDefault: true },
     { id: 2, name: '小工事', type: '小工事', isDefault: true },
@@ -92,6 +125,259 @@ export const RegistrationProvider: React.FC<{ children: ReactNode }> = ({ childr
     { id: 1, userId: 'dandori_0', lastName: '田中', firstName: '太郎', email: 'tanaka@example.com', permission: 'システム管理者', memo: '営業担当' },
     { id: 2, userId: 'dandori_1', lastName: '佐藤', firstName: '花子', email: 'sato@example.com', permission: '業作システム管理者', memo: '現場監督' },
     { id: 3, userId: 'dandori_2', lastName: '鈴木', firstName: '一郎', email: 'suzuki@example.com', permission: '一般ユーザー(デフォルト)', memo: '管理者' },
+  ]);
+
+  const [constructions, setConstructions] = useState<Construction[]>([
+    {
+      id: 1,
+      orderStatus: '見積中',
+      constructionCategory: '大工事',
+      constructionDivision: '元請',
+      buildingUsage: '事務所',
+      constructionName: '東京駅前オフィスビル新築工事',
+      clientId: 1,
+      prefecture: '東京都',
+      constructionLocation: '千代田区丸の内1-1-1',
+      contractPeriodStart: '2024-04-01',
+      contractPeriodEnd: '2025-03-31',
+      plannedPeriodStart: '2024-04-15',
+      plannedPeriodEnd: '2025-03-15',
+      constructionAmount: '500,000,000',
+      consumptionTax: '50,000,000',
+      estimatedOrderAmount: '450,000,000',
+      contractDate: '2024-03-15',
+      deliveryPeriod: '30',
+      taxRate: 10,
+      siteAgent: '1',
+      assignedStaff: '2',
+      systemUser: '1',
+      salesPerson: '1',
+    },
+    {
+      id: 2,
+      orderStatus: '見積中',
+      constructionCategory: '小工事',
+      constructionDivision: '下請',
+      buildingUsage: '店舗',
+      constructionName: '渋谷商業施設リフォーム工事',
+      clientId: 2,
+      prefecture: '東京都',
+      constructionLocation: '渋谷区道玄坂2-2-2',
+      contractPeriodStart: '2024-05-01',
+      contractPeriodEnd: '2024-08-31',
+      plannedPeriodStart: '2024-05-10',
+      plannedPeriodEnd: '2024-08-20',
+      constructionAmount: '80,000,000',
+      consumptionTax: '8,000,000',
+      estimatedOrderAmount: '75,000,000',
+      contractDate: '2024-04-20',
+      deliveryPeriod: '15',
+      taxRate: 10,
+      siteAgent: '2',
+      assignedStaff: '1',
+      systemUser: '2',
+      salesPerson: '1',
+    },
+    {
+      id: 3,
+      orderStatus: '見積中',
+      constructionCategory: '大工事',
+      constructionDivision: 'JV',
+      buildingUsage: '工場',
+      constructionName: '神奈川工業団地建設工事',
+      clientId: 1,
+      prefecture: '神奈川県',
+      constructionLocation: '横浜市鶴見区大黒町3-3-3',
+      contractPeriodStart: '2024-06-01',
+      contractPeriodEnd: '2025-05-31',
+      plannedPeriodStart: '2024-06-15',
+      plannedPeriodEnd: '2025-05-15',
+      constructionAmount: '1,200,000,000',
+      consumptionTax: '120,000,000',
+      estimatedOrderAmount: '1,150,000,000',
+      contractDate: '2024-05-10',
+      deliveryPeriod: '45',
+      taxRate: 10,
+      siteAgent: '1',
+      assignedStaff: '3',
+      systemUser: '1',
+      salesPerson: '2',
+    },
+    {
+      id: 4,
+      orderStatus: '見積中',
+      constructionCategory: '小工事',
+      constructionDivision: '元請',
+      buildingUsage: '共同住宅',
+      constructionName: '品川マンション外壁塗装工事',
+      clientId: 2,
+      prefecture: '東京都',
+      constructionLocation: '品川区東品川4-4-4',
+      contractPeriodStart: '2024-07-01',
+      contractPeriodEnd: '2024-09-30',
+      plannedPeriodStart: '2024-07-10',
+      plannedPeriodEnd: '2024-09-20',
+      constructionAmount: '35,000,000',
+      consumptionTax: '3,500,000',
+      estimatedOrderAmount: '33,000,000',
+      contractDate: '2024-06-15',
+      deliveryPeriod: '10',
+      taxRate: 10,
+      siteAgent: '3',
+      assignedStaff: '2',
+      systemUser: '3',
+      salesPerson: '1',
+    },
+    {
+      id: 5,
+      orderStatus: '見積中',
+      constructionCategory: '大工事',
+      constructionDivision: '元請',
+      buildingUsage: '病院',
+      constructionName: '千葉総合病院増築工事',
+      clientId: 1,
+      prefecture: '千葉県',
+      constructionLocation: '千葉市中央区新町5-5-5',
+      contractPeriodStart: '2024-08-01',
+      contractPeriodEnd: '2026-03-31',
+      plannedPeriodStart: '2024-08-15',
+      plannedPeriodEnd: '2026-03-15',
+      constructionAmount: '2,500,000,000',
+      consumptionTax: '250,000,000',
+      estimatedOrderAmount: '2,400,000,000',
+      contractDate: '2024-07-10',
+      deliveryPeriod: '60',
+      taxRate: 10,
+      siteAgent: '1',
+      assignedStaff: '2',
+      systemUser: '1',
+      salesPerson: '2',
+    },
+    {
+      id: 6,
+      orderStatus: '見積中',
+      constructionCategory: '小工事',
+      constructionDivision: '下請',
+      buildingUsage: '学校',
+      constructionName: '埼玉県立高校体育館改修工事',
+      clientId: 2,
+      prefecture: '埼玉県',
+      constructionLocation: 'さいたま市浦和区高砂6-6-6',
+      contractPeriodStart: '2024-09-01',
+      contractPeriodEnd: '2024-12-20',
+      plannedPeriodStart: '2024-09-10',
+      plannedPeriodEnd: '2024-12-10',
+      constructionAmount: '120,000,000',
+      consumptionTax: '12,000,000',
+      estimatedOrderAmount: '115,000,000',
+      contractDate: '2024-08-20',
+      deliveryPeriod: '20',
+      taxRate: 10,
+      siteAgent: '2',
+      assignedStaff: '3',
+      systemUser: '2',
+      salesPerson: '1',
+    },
+    {
+      id: 7,
+      orderStatus: '見積中',
+      constructionCategory: '大工事',
+      constructionDivision: 'JV',
+      buildingUsage: 'ホテル',
+      constructionName: '箱根リゾートホテル新築工事',
+      clientId: 1,
+      prefecture: '神奈川県',
+      constructionLocation: '足柄下郡箱根町湯本7-7-7',
+      contractPeriodStart: '2024-10-01',
+      contractPeriodEnd: '2025-12-31',
+      plannedPeriodStart: '2024-10-15',
+      plannedPeriodEnd: '2025-12-15',
+      constructionAmount: '1,800,000,000',
+      consumptionTax: '180,000,000',
+      estimatedOrderAmount: '1,750,000,000',
+      contractDate: '2024-09-15',
+      deliveryPeriod: '30',
+      taxRate: 10,
+      siteAgent: '1',
+      assignedStaff: '2',
+      systemUser: '1',
+      salesPerson: '2',
+    },
+    {
+      id: 8,
+      orderStatus: '見積中',
+      constructionCategory: '小工事',
+      constructionDivision: '下請',
+      buildingUsage: '倉庫',
+      constructionName: '川崎物流センター内装工事',
+      clientId: 2,
+      prefecture: '神奈川県',
+      constructionLocation: '川崎市川崎区東扇島8-8-8',
+      contractPeriodStart: '2024-11-01',
+      contractPeriodEnd: '2025-01-31',
+      plannedPeriodStart: '2024-11-10',
+      plannedPeriodEnd: '2025-01-20',
+      constructionAmount: '65,000,000',
+      consumptionTax: '6,500,000',
+      estimatedOrderAmount: '62,000,000',
+      contractDate: '2024-10-15',
+      deliveryPeriod: '15',
+      taxRate: 10,
+      siteAgent: '3',
+      assignedStaff: '1',
+      systemUser: '3',
+      salesPerson: '1',
+    },
+    {
+      id: 9,
+      orderStatus: '見積中',
+      constructionCategory: '大工事',
+      constructionDivision: '元請',
+      buildingUsage: '事務所',
+      constructionName: '横浜みなとみらいオフィスタワー新築工事',
+      clientId: 1,
+      prefecture: '神奈川県',
+      constructionLocation: '横浜市西区みなとみらい9-9-9',
+      contractPeriodStart: '2024-12-01',
+      contractPeriodEnd: '2026-11-30',
+      plannedPeriodStart: '2024-12-15',
+      plannedPeriodEnd: '2026-11-15',
+      constructionAmount: '3,200,000,000',
+      consumptionTax: '320,000,000',
+      estimatedOrderAmount: '3,100,000,000',
+      contractDate: '2024-11-10',
+      deliveryPeriod: '60',
+      taxRate: 10,
+      siteAgent: '1',
+      assignedStaff: '2',
+      systemUser: '1',
+      salesPerson: '2',
+    },
+    {
+      id: 10,
+      orderStatus: '見積中',
+      constructionCategory: '小工事',
+      constructionDivision: '下請',
+      buildingUsage: '店舗',
+      constructionName: '新宿駅構内店舗改装工事',
+      clientId: 2,
+      prefecture: '東京都',
+      constructionLocation: '新宿区新宿3-10-10',
+      contractPeriodStart: '2025-01-15',
+      contractPeriodEnd: '2025-03-31',
+      plannedPeriodStart: '2025-01-20',
+      plannedPeriodEnd: '2025-03-25',
+      constructionAmount: '45,000,000',
+      consumptionTax: '4,500,000',
+      estimatedOrderAmount: '42,000,000',
+      contractDate: '2025-01-05',
+      deliveryPeriod: '10',
+      taxRate: 10,
+      siteAgent: '2',
+      assignedStaff: '3',
+      systemUser: '2',
+      salesPerson: '1',
+    },
   ]);
 
   const [constructionTypes, setConstructionTypes] = useState<ConstructionType[]>([
@@ -143,6 +429,10 @@ export const RegistrationProvider: React.FC<{ children: ReactNode }> = ({ childr
         setClients,
         users,
         setUsers,
+        companyCode,
+        setCompanyCode,
+        constructions,
+        setConstructions,
       }}
     >
       {children}

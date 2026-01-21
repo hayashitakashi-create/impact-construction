@@ -40,6 +40,12 @@ import {
 } from '@mui/icons-material';
 import { useRegistration, Client } from '../contexts/RegistrationContext';
 
+interface ConstructionRegistrationProps {
+  constructionId?: number | null;
+  editMode?: boolean;
+  onSave?: () => void;
+}
+
 // テキストファイルプレビューコンポーネント
 const TextFilePreview: React.FC<{ file: File }> = ({ file }) => {
   const [textContent, setTextContent] = React.useState<string>('読み込み中...');
@@ -64,8 +70,8 @@ const TextFilePreview: React.FC<{ file: File }> = ({ file }) => {
   );
 };
 
-const ConstructionRegistration: React.FC = () => {
-  const { categories, constructionTypes, buildingUsages, clients, users } = useRegistration();
+const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ constructionId, editMode = false, onSave }) => {
+  const { categories, constructionTypes, buildingUsages, clients, users, constructions, setConstructions } = useRegistration();
   const [orderStatus, setOrderStatus] = useState('見積中');
   const [constructionCategory, setConstructionCategory] = useState('');
   const [constructionDivision, setConstructionDivision] = useState('');
@@ -370,6 +376,45 @@ const ConstructionRegistration: React.FC = () => {
     };
   }, [previewUrl]);
 
+  // 編集モード: 工事データを読み込んでフォームに初期値を設定
+  React.useEffect(() => {
+    if (editMode && constructionId) {
+      const construction = constructions.find(c => c.id === constructionId);
+      if (construction) {
+        setOrderStatus(construction.orderStatus);
+        setConstructionCategory(construction.constructionCategory);
+        setConstructionDivision(construction.constructionDivision);
+        setBuildingUsage(construction.buildingUsage);
+        setConstructionName(construction.constructionName);
+
+        // 発注者を設定
+        const client = clients.find(c => c.id === construction.clientId);
+        if (client) {
+          setSelectedClient(client);
+        }
+
+        setPrefecture(construction.prefecture);
+        setConstructionLocation(construction.constructionLocation);
+        setConstructionAmount(construction.constructionAmount);
+        setContractPeriodStart(construction.contractPeriodStart);
+        setContractPeriodEnd(construction.contractPeriodEnd);
+        setPlannedPeriodStart(construction.plannedPeriodStart);
+        setPlannedPeriodEnd(construction.plannedPeriodEnd);
+        setConsumptionTax(construction.consumptionTax);
+        setEstimatedOrderAmount(construction.estimatedOrderAmount);
+        setContractDate(construction.contractDate || '');
+        setDeliveryPeriod(construction.deliveryPeriod);
+        setTaxRate(construction.taxRate);
+
+        // 関係者情報
+        setSiteAgent(construction.siteAgent);
+        setAssignedStaff(construction.assignedStaff);
+        setSystemUser(construction.systemUser);
+        setSalesPerson(construction.salesPerson);
+      }
+    }
+  }, [editMode, constructionId, constructions, clients]);
+
   // 必須項目のバリデーション
   const isFormValid = useMemo(() => {
     return (
@@ -395,10 +440,52 @@ const ConstructionRegistration: React.FC = () => {
 
   // 保存処理
   const handleSave = () => {
-    if (!isFormValid) return;
+    if (!isFormValid || !selectedClient) return;
 
-    // TODO: 実際の保存処理を実装
-    alert('工事情報を保存しました');
+    if (editMode && constructionId) {
+      // 編集モード: 既存の工事データを更新
+      const updatedConstructions = constructions.map(c => {
+        if (c.id === constructionId) {
+          return {
+            ...c,
+            orderStatus,
+            constructionCategory,
+            constructionDivision,
+            buildingUsage,
+            constructionName,
+            clientId: selectedClient.id,
+            prefecture,
+            constructionLocation,
+            constructionAmount,
+            contractPeriodStart,
+            contractPeriodEnd,
+            plannedPeriodStart,
+            plannedPeriodEnd,
+            consumptionTax,
+            estimatedOrderAmount,
+            contractDate,
+            deliveryPeriod,
+            taxRate,
+            siteAgent,
+            assignedStaff,
+            systemUser,
+            salesPerson,
+          };
+        }
+        return c;
+      });
+      setConstructions(updatedConstructions);
+      alert('工事情報を更新しました');
+    } else {
+      // 新規登録モード
+      // TODO: 実際の新規登録処理を実装
+      alert('工事情報を保存しました');
+    }
+
+    // 保存後にコールバックを実行（画面遷移）
+    if (onSave) {
+      onSave();
+    }
   };
 
   return (
@@ -421,7 +508,7 @@ const ConstructionRegistration: React.FC = () => {
             <ConstructionIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
           </Box>
           <Typography variant="h4" sx={{ color: '#1C2026', fontWeight: 600 }}>
-            工事登録
+            {editMode ? '工事編集' : '工事登録'}
           </Typography>
         </Box>
 
@@ -479,10 +566,31 @@ const ConstructionRegistration: React.FC = () => {
                   control={<Radio sx={{ color: '#0078C8', '&.Mui-checked': { color: '#0078C8' } }} />}
                   label="見積中"
                 />
+                {editMode && (
+                  <>
+                    <FormControlLabel
+                      value="受注"
+                      control={<Radio sx={{ color: '#0078C8', '&.Mui-checked': { color: '#0078C8' } }} />}
+                      label="受注"
+                    />
+                    <FormControlLabel
+                      value="失注"
+                      control={<Radio sx={{ color: '#0078C8', '&.Mui-checked': { color: '#0078C8' } }} />}
+                      label="失注"
+                    />
+                    <FormControlLabel
+                      value="中止"
+                      control={<Radio sx={{ color: '#0078C8', '&.Mui-checked': { color: '#0078C8' } }} />}
+                      label="中止"
+                    />
+                  </>
+                )}
               </RadioGroup>
             </FormControl>
             <Typography sx={{ color: '#FF9800', fontSize: '0.875rem', mt: 1 }}>
-              ※ 新規登録時の場合は「見積中」のみ選択可能です
+              {editMode
+                ? '※ 編集モードでは受注状態を変更できます'
+                : '※ 新規登録時の場合は「見積中」のみ選択可能です'}
             </Typography>
           </Box>
 
@@ -528,11 +636,9 @@ const ConstructionRegistration: React.FC = () => {
                     onChange={(e) => setConstructionDivision(e.target.value)}
                   >
                     <MenuItem value="">選択してください</MenuItem>
-                    {workGroups.map((group) => (
-                      <MenuItem key={group} value={group}>
-                        {group}
-                      </MenuItem>
-                    ))}
+                    <MenuItem value="元請">元請</MenuItem>
+                    <MenuItem value="下請">下請</MenuItem>
+                    <MenuItem value="JV">JV</MenuItem>
                   </Select>
                   <FormHelperText>{!constructionDivision ? '必須です' : ''}</FormHelperText>
                 </FormControl>

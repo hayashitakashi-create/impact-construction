@@ -17,6 +17,7 @@ import {
   Save as SaveIcon,
   Add as AddIcon,
 } from '@mui/icons-material';
+import { useRegistration } from '../contexts/RegistrationContext';
 
 const FormRow = ({ label, children, alignStart = false }: { label: string; children: React.ReactNode; alignStart?: boolean }) => (
   <Box sx={{ display: 'flex', alignItems: alignStart ? 'flex-start' : 'center', mb: 2 }}>
@@ -26,10 +27,11 @@ const FormRow = ({ label, children, alignStart = false }: { label: string; child
 );
 
 const CompanyRegistration: React.FC = () => {
+  const { companyCode, setCompanyCode } = useRegistration();
+
   const [selectedOffice, setSelectedOffice] = useState('本社');
   const [companyName, setCompanyName] = useState('株式会社ダンドリワーク');
   const [menuCompanyName, setMenuCompanyName] = useState('株式会社ダンドリワーク');
-  const [companyCode, setCompanyCode] = useState('dandori');
   const [representative, setRepresentative] = useState('');
   const [postalCode1, setPostalCode1] = useState('');
   const [postalCode2, setPostalCode2] = useState('');

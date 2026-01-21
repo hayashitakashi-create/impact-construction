@@ -134,7 +134,7 @@ const allMenuItems: SearchableMenuItem[] = [
 ];
 
 interface HeaderProps {
-  onNavigate?: (page: 'landing' | 'login' | 'dashboard' | 'construction-registration' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company') => void;
+  onNavigate?: (page: 'landing' | 'login' | 'dashboard' | 'construction-list' | 'construction-registration' | 'construction-detail' | 'estimate-list' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
@@ -165,7 +165,12 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
     console.log('Menu clicked:', path);
     setSelectedMenu(path);
     handleConstructionClose();
-    if (path === '/construction/register') {
+    if (path === '/construction/list') {
+      console.log('Navigating to construction-list');
+      if (onNavigate) {
+        onNavigate('construction-list');
+      }
+    } else if (path === '/construction/register') {
       console.log('Navigating to construction-registration');
       if (onNavigate) {
         onNavigate('construction-registration');
@@ -184,6 +189,11 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
   const handleQuotationMenuClick = (path: string) => {
     setSelectedMenu(path);
     handleQuotationClose();
+    if (path === '/quotation/list') {
+      if (onNavigate) {
+        onNavigate('estimate-list');
+      }
+    }
   };
 
   const handleBudgetClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -318,8 +328,12 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
     handleSearchDialogClose();
 
     // 各メニューパスに応じて遷移処理
-    if (path === '/construction/register') {
+    if (path === '/construction/list') {
+      if (onNavigate) onNavigate('construction-list');
+    } else if (path === '/construction/register') {
       if (onNavigate) onNavigate('construction-registration');
+    } else if (path === '/quotation/list') {
+      if (onNavigate) onNavigate('estimate-list');
     } else if (path === '/settings/user') {
       if (onNavigate) onNavigate('user');
     } else if (path === '/settings/construction-category') {
@@ -332,6 +346,13 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
       if (onNavigate) onNavigate('client');
     } else if (path === '/settings/company') {
       if (onNavigate) onNavigate('company');
+    }
+  };
+
+  // ロゴクリックでダッシュボードへ戻る
+  const handleLogoClick = () => {
+    if (onNavigate) {
+      onNavigate('dashboard');
     }
   };
 
@@ -361,7 +382,18 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
     >
       <Toolbar sx={{ minHeight: '56px !important', px: 3 }}>
         {/* 会社名とロゴ */}
-        <Box sx={{ display: 'flex', alignItems: 'center', mr: 3 }}>
+        <Box
+          onClick={handleLogoClick}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            mr: 3,
+            cursor: 'pointer',
+            '&:hover': {
+              opacity: 0.9,
+            },
+          }}
+        >
           <IconButton
             sx={{
               backgroundColor: '#FFFFFF',
