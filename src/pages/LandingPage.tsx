@@ -13,11 +13,9 @@ import {
   AccountBalance as AccountBalanceIcon,
   Link as LinkIcon,
   Construction as ConstructionIcon,
-  Assessment as AssessmentIcon,
   Payment as PaymentIcon,
   ShoppingCart as ShoppingCartIcon,
   TrendingUp as TrendingUpIcon,
-  Schedule as ScheduleIcon,
   CheckCircle as CheckCircleIcon,
   RequestQuote as RequestQuoteIcon,
 } from '@mui/icons-material';
@@ -241,7 +239,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToLogin }) => {
               mb: 2,
             }}
           >
-            6つの主要機能
+            5つの主要機能
           </Typography>
           <Typography
             variant="body1"
@@ -644,87 +642,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigateToLogin }) => {
                     '注文書の自動作成',
                     '発注実績の追跡',
                     '承認ワークフロー',
-                  ].map((item, i) => (
-                    <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <CheckCircleIcon sx={{ color: '#95CCC5', fontSize: 20 }} />
-                      <Typography sx={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-                        {item}
-                      </Typography>
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-
-          {/* 機能6: 顧客分析・営業支援 */}
-          <Box>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                gap: 6,
-                alignItems: 'center',
-              }}
-            >
-              <Box>
-                <Box
-                  sx={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    borderRadius: 2,
-                    p: 3,
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      height: 300,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: '#F6F6F6',
-                      borderRadius: 1,
-                    }}
-                  >
-                    <AssessmentIcon sx={{ fontSize: 120, color: '#0078C8' }} />
-                  </Box>
-                </Box>
-              </Box>
-              <Box>
-                <Box
-                  sx={{
-                    display: 'inline-block',
-                    backgroundColor: '#0078C8',
-                    color: '#FFFFFF',
-                    px: 2,
-                    py: 0.5,
-                    borderRadius: 1,
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    mb: 2,
-                  }}
-                >
-                  機能06
-                </Box>
-                <Typography
-                  variant="h4"
-                  sx={{ color: '#FFFFFF', fontWeight: 700, mb: 3 }}
-                >
-                  顧客分析・営業支援
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 3, lineHeight: 1.8 }}
-                >
-                  過去の受注データから顧客を分析。
-                  リード育成や営業活動の効率化をサポートします。
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                  {[
-                    'リード管理・スコアリング',
-                    'メール配信自動化',
-                    '顧客セグメント管理',
-                    '営業レポート機能',
                   ].map((item, i) => (
                     <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <CheckCircleIcon sx={{ color: '#95CCC5', fontSize: 20 }} />
