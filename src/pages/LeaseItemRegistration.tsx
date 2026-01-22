@@ -25,7 +25,6 @@ import {
 } from '@mui/material';
 import {
   Add as AddIcon,
-  Edit as EditIcon,
   Delete as DeleteIcon,
   Settings as SettingsIcon,
   Close as CloseIcon,

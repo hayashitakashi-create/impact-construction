@@ -266,12 +266,6 @@ const ScreenPermissionTemplateRegistration: React.FC = () => {
     alert('設定を保存しました');
   };
 
-  // 権限サマリー表示
-  const getPermissionSummary = (category: keyof PermissionDetails, template: PermissionTemplate) => {
-    const perms = template.permissions[category];
-    return perms.length > 0 ? `${category} ○` : `${category} -`;
-  };
-
   const open = Boolean(anchorEl);
 
   return (

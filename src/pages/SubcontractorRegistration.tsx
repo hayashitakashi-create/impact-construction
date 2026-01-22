@@ -20,13 +20,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Tabs,
-  Tab,
-  Chip,
   InputAdornment,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
   Collapse,
   Pagination,
 } from '@mui/material';
@@ -143,7 +137,7 @@ const SubcontractorRegistration: React.FC = () => {
     },
   ]);
 
-  const [unregisteredSubcontractors, setUnregisteredSubcontractors] = useState<Subcontractor[]>([
+  const [unregisteredSubcontractors] = useState<Subcontractor[]>([
     {
       id: 100,
       業者コード: '1',
@@ -161,22 +155,9 @@ const SubcontractorRegistration: React.FC = () => {
     },
   ]);
 
-  const workTypes = [
-    '土木標準詳細積算書',
-    '建築標準詳細積算書',
-    '土木簡易詳細積算書',
-    '建築簡易詳細積算書',
-    '土木総括表積算書',
-    '建築総括表積算書',
-  ];
-
   const prefectures = [
     '東京都', '神奈川県', '千葉県', '埼玉県', '静岡県', '愛知県', '大阪府', '福岡県',
   ];
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-  };
 
   const handleOpenDialog = (subcontractor?: Subcontractor) => {
     if (subcontractor) {
@@ -245,21 +226,6 @@ const SubcontractorRegistration: React.FC = () => {
   const handleDelete = (id: number) => {
     if (window.confirm('この外注業者を削除しますか？')) {
       setSubcontractors(subcontractors.filter(s => s.id !== id));
-    }
-  };
-
-  const handleWorkTypeChange = (workType: string) => {
-    const currentWorkTypes = formData.工種;
-    if (currentWorkTypes.includes(workType)) {
-      setFormData({
-        ...formData,
-        工種: currentWorkTypes.filter(w => w !== workType),
-      });
-    } else {
-      setFormData({
-        ...formData,
-        工種: [...currentWorkTypes, workType],
-      });
     }
   };
 

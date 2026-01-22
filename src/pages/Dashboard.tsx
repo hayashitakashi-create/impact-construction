@@ -10,7 +10,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Chip,
   Button,
   Paper,
   Accordion,
@@ -33,7 +32,6 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
 } from '@mui/icons-material';
-import { labelColors } from '../theme';
 import { useRegistration } from '../contexts/RegistrationContext';
 
 interface StatCardProps {
@@ -168,7 +166,7 @@ const Dashboard: React.FC = () => {
 
       return true;
     });
-  }, [constructions, searchConstructionNumber, searchConstructionName, searchSiteManager,
+  }, [constructions, searchConstructionName, searchSiteManager,
       orderEstimating, orderReceived, orderLost, orderStopped, statusInProgress, statusCompleted]);
 
   const handleSearch = () => {

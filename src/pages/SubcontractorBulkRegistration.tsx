@@ -62,7 +62,7 @@ const SubcontractorBulkRegistration: React.FC = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [errors, setErrors] = useState<ErrorMessage[]>([]);
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
-  const [previewData, setPreviewData] = useState<SubcontractorData | null>(null);
+  const [previewData] = useState<SubcontractorData | null>(null);
 
   // ファイル選択ハンドラー
   const handleTorihikisakiFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -215,33 +215,6 @@ const SubcontractorBulkRegistration: React.FC = () => {
     } finally {
       setUploading(false);
     }
-  };
-
-  // プレビュー用のサンプルデータ表示
-  const handlePreview = () => {
-    const sampleData: SubcontractorData = {
-      業者コード: '3333333',
-      業者名: '株◯◯工業',
-      ふりがな: '◯◯こうぎょう',
-      部署名: '購買部',
-      郵便番号: '419-1111',
-      住所: '静岡県磐田市◯◯町2-3-4',
-      住所2: '静岡県磐田市◯●町1-2',
-      Email: 'sample@kawata.org',
-      電話番号: '54-145-789',
-      FAX: '54-145-888',
-      担当部署名: '購買部',
-      担当役職名: '課長',
-      担当者: '佐藤',
-      出来高割合: 90,
-      現金支払月: '当月',
-      現金支払率: 100,
-      支払月数: 4,
-      支払率: 0,
-    };
-
-    setPreviewData(sampleData);
-    setPreviewDialogOpen(true);
   };
 
   return (

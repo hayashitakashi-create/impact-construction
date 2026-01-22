@@ -5,8 +5,6 @@ import theme from './theme';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
 import Dashboard from './pages/Dashboard';
-import Login from './pages/Login';
-import LandingPage from './pages/LandingPage';
 import ConstructionList from './pages/ConstructionList';
 import ConstructionRegistration from './pages/ConstructionRegistration';
 import ConstructionDetail from './pages/ConstructionDetail';

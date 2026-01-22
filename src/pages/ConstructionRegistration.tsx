@@ -71,7 +71,7 @@ const TextFilePreview: React.FC<{ file: File }> = ({ file }) => {
 };
 
 const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ constructionId, editMode = false, onSave }) => {
-  const { categories, constructionTypes, buildingUsages, clients, users, constructions, setConstructions } = useRegistration();
+  const { categories, buildingUsages, clients, users, constructions, setConstructions } = useRegistration();
   const [orderStatus, setOrderStatus] = useState('見積中');
   const [constructionCategory, setConstructionCategory] = useState('');
   const [constructionDivision, setConstructionDivision] = useState('');
@@ -81,7 +81,6 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
   const [openClientDialog, setOpenClientDialog] = useState(false);
   const [prefecture, setPrefecture] = useState('');
   const [constructionLocation, setConstructionLocation] = useState('');
-  const [siteArea, setSiteArea] = useState('');
   const [constructionAmount, setConstructionAmount] = useState('');
   const [contractPeriodStart, setContractPeriodStart] = useState('');
   const [contractPeriodEnd, setContractPeriodEnd] = useState('');
@@ -120,12 +119,6 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
 
   // 支払い回数は行数と連動
   const paymentCount = paymentRows.length;
-
-  // 工種グループの重複を除いたリストを作成
-  const workGroups = useMemo(() => {
-    const uniqueGroups = Array.from(new Set(constructionTypes.map(type => type.workGroup)));
-    return uniqueGroups;
-  }, [constructionTypes]);
 
   // 契約工期の日数を計算
   const contractPeriodDays = useMemo(() => {

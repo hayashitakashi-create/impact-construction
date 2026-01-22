@@ -16,7 +16,6 @@ import {
   AccordionDetails,
   TextField,
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
   Paper,
