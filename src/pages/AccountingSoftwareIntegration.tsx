@@ -28,6 +28,13 @@ import {
   Delete as DeleteIcon,
   Search as SearchIcon,
 } from '@mui/icons-material';
+import Sidebar from '../components/Layout/Sidebar';
+
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface AccountingSoftwareIntegrationProps {
+  onNavigate?: (page: PageType) => void;
+}
 
 interface AccountingItem {
   label: string;
@@ -64,7 +71,7 @@ interface AccountingSoftwareSetting {
   共通仮設: AccountingItem[];
 }
 
-const AccountingSoftwareIntegration: React.FC = () => {
+const AccountingSoftwareIntegration: React.FC<AccountingSoftwareIntegrationProps> = ({ onNavigate }) => {
   // 検索用の状態
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -377,78 +384,106 @@ const AccountingSoftwareIntegration: React.FC = () => {
   );
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* ヘッダー */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              bgcolor: '#0078C8',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mr: 2,
-            }}
-          >
-            <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 24 }} />
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      {/* サイドバー */}
+      <Sidebar currentPage="accounting-integration" onNavigate={onNavigate} />
+
+      {/* メインコンテンツ */}
+      <Box sx={{ flex: 1, p: 3 }}>
+        {/* ヘッダー */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                bgcolor: '#007AFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: 2,
+              }}
+            >
+              <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 24 }} />
+            </Box>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: '#1D1D1F' }}>
+              会計ソフト連携設定
+            </Typography>
           </Box>
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#1C2026' }}>
-            会計ソフト連携設定
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleOpenNewDialog}
-          sx={{
-            bgcolor: '#5DADE2',
-            '&:hover': {
-              bgcolor: '#3498DB',
-            },
-            textTransform: 'none',
-            fontSize: '0.875rem',
-          }}
-        >
-          新規登録
-        </Button>
-      </Box>
-
-      {/* 検索エリア */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Button
-            variant="outlined"
-            startIcon={<SearchIcon />}
-            onClick={() => setSearchOpen(!searchOpen)}
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleOpenNewDialog}
             sx={{
-              textTransform: 'none',
-              borderColor: '#5DADE2',
-              color: '#5DADE2',
+              bgcolor: '#007AFF',
               '&:hover': {
-                borderColor: '#3498DB',
-                bgcolor: 'rgba(93, 173, 226, 0.1)',
+                bgcolor: '#0051D5',
               },
+              textTransform: 'none',
+              fontSize: '0.875rem',
+              borderRadius: '8px',
             }}
           >
-            検索
+            新規登録
           </Button>
-          {searchOpen && (
-            <TextField
-              size="small"
-              placeholder="設定名または会計ソフトで検索"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              sx={{ flex: 1, maxWidth: 400 }}
-            />
-          )}
         </Box>
-      </Paper>
 
-      {/* 設定一覧テーブル */}
-      <TableContainer component={Paper}>
+        {/* 検索エリア */}
+        <Paper sx={{
+          p: 2,
+          mb: 3,
+          background: 'rgba(255, 255, 255, 0.7)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '16px',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          boxShadow: 'none',
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Button
+              variant="outlined"
+              startIcon={<SearchIcon />}
+              onClick={() => setSearchOpen(!searchOpen)}
+              sx={{
+                textTransform: 'none',
+                borderColor: '#007AFF',
+                color: '#007AFF',
+                borderRadius: '8px',
+                '&:hover': {
+                  borderColor: '#0051D5',
+                  bgcolor: 'rgba(0, 122, 255, 0.1)',
+                },
+              }}
+            >
+              検索
+            </Button>
+            {searchOpen && (
+              <TextField
+                size="small"
+                placeholder="設定名または会計ソフトで検索"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                sx={{ flex: 1, maxWidth: 400 }}
+              />
+            )}
+          </Box>
+        </Paper>
+
+        {/* 設定一覧テーブル */}
+        <TableContainer component={Paper} sx={{
+          background: 'rgba(255, 255, 255, 0.7)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '16px',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          boxShadow: 'none',
+        }}>
         <Table>
           <TableHead>
             <TableRow sx={{ bgcolor: '#E3F2FD' }}>
@@ -729,7 +764,8 @@ const AccountingSoftwareIntegration: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+      </Box>
+    </div>
   );
 };
 

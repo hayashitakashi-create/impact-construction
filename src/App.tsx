@@ -73,6 +73,8 @@ function App() {
       <RegistrationProvider>
         {currentPage === 'dashboard' ? (
           <Dashboard onNavigate={setCurrentPage} />
+        ) : currentPage === 'accounting-integration' ? (
+          <AccountingSoftwareIntegration onNavigate={setCurrentPage} />
         ) : (
           <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Header onNavigate={setCurrentPage} />
@@ -80,7 +82,7 @@ function App() {
               component="main"
               sx={{
                 flexGrow: 1,
-                bgcolor: (currentPage === 'construction-registration' || currentPage === 'construction-list' || currentPage === 'construction-detail' || currentPage === 'estimate-list' || currentPage === 'construction-category' || currentPage === 'construction-type' || currentPage === 'building-usage' || currentPage === 'client' || currentPage === 'user' || currentPage === 'company' || currentPage === 'subcontractor-bulk' || currentPage === 'subcontractor' || currentPage === 'work-type' || currentPage === 'material' || currentPage === 'lease-item' || currentPage === 'common-temporary' || currentPage === 'site-expense' || currentPage === 'screen-permission' || currentPage === 'screen-permission-template' || currentPage === 'workflow-template' || currentPage === 'accounting-integration') ? '#F6F6F6' : '#FFFFFF',
+                bgcolor: (currentPage === 'construction-registration' || currentPage === 'construction-list' || currentPage === 'construction-detail' || currentPage === 'estimate-list' || currentPage === 'construction-category' || currentPage === 'construction-type' || currentPage === 'building-usage' || currentPage === 'client' || currentPage === 'user' || currentPage === 'company' || currentPage === 'subcontractor-bulk' || currentPage === 'subcontractor' || currentPage === 'work-type' || currentPage === 'material' || currentPage === 'lease-item' || currentPage === 'common-temporary' || currentPage === 'site-expense' || currentPage === 'screen-permission' || currentPage === 'screen-permission-template' || currentPage === 'workflow-template') ? '#F6F6F6' : '#FFFFFF',
                 mt: '56px',
               }}
             >
@@ -122,7 +124,6 @@ function App() {
               {currentPage === 'screen-permission' && <ScreenPermissionRegistration />}
               {currentPage === 'screen-permission-template' && <ScreenPermissionTemplateRegistration />}
               {currentPage === 'workflow-template' && <WorkflowTemplateRegistration />}
-              {currentPage === 'accounting-integration' && <AccountingSoftwareIntegration />}
             </Box>
             <Footer />
           </Box>
