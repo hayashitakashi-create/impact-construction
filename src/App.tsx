@@ -72,7 +72,7 @@ function App() {
       <CssBaseline />
       <RegistrationProvider>
         {currentPage === 'dashboard' ? (
-          <Dashboard />
+          <Dashboard onNavigate={setCurrentPage} />
         ) : (
           <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Header onNavigate={setCurrentPage} />

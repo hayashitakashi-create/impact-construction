@@ -169,19 +169,26 @@ const statusColors = {
   },
 };
 
+// サイドバーメニュー項目の型定義
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface DashboardProps {
+  onNavigate?: (page: PageType) => void;
+}
+
 // サイドバーメニュー項目
 const sidebarItems = [
-  { icon: Building2, label: "工事", active: true },
-  { icon: FileText, label: "見積", active: false },
-  { icon: DollarSign, label: "実行予算", active: false },
-  { icon: ShoppingCart, label: "購買発注", active: false },
-  { icon: TrendingUp, label: "出来高管理", active: false },
-  { icon: Wallet, label: "支払管理", active: false },
-  { icon: Layers, label: "実行予算費目", active: false },
-  { icon: Settings, label: "その他・設定", active: false },
+  { icon: Building2, label: "工事", active: true, page: 'construction-list' as PageType },
+  { icon: FileText, label: "見積", active: false, page: 'estimate-list' as PageType },
+  { icon: DollarSign, label: "実行予算", active: false, page: null },
+  { icon: ShoppingCart, label: "購買発注", active: false, page: null },
+  { icon: TrendingUp, label: "出来高管理", active: false, page: null },
+  { icon: Wallet, label: "支払管理", active: false, page: null },
+  { icon: Layers, label: "実行予算費目", active: false, page: null },
+  { icon: Settings, label: "その他・設定", active: false, page: 'accounting-integration' as PageType },
 ];
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   return (
     <div
       style={{
@@ -231,6 +238,11 @@ const Dashboard: React.FC = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
+              onClick={() => {
+                if (item.page && onNavigate) {
+                  onNavigate(item.page);
+                }
+              }}
               style={{
                 width: "100%",
                 padding: "12px 24px",
@@ -240,13 +252,14 @@ const Dashboard: React.FC = () => {
                 background: item.active ? "#007AFF" : "transparent",
                 color: item.active ? "#FFFFFF" : "#1D1D1F",
                 border: "none",
-                cursor: "pointer",
+                cursor: item.page ? "pointer" : "default",
                 fontSize: "14px",
                 fontWeight: item.active ? 600 : 400,
                 transition: "all 0.2s",
+                opacity: item.page ? 1 : 0.5,
               }}
               onMouseEnter={(e) => {
-                if (!item.active) {
+                if (!item.active && item.page) {
                   e.currentTarget.style.backgroundColor = "rgba(0, 122, 255, 0.1)";
                 }
               }}
@@ -356,6 +369,11 @@ const Dashboard: React.FC = () => {
                 <List size={18} color="#1D1D1F" />
               </button>
               <button
+                onClick={() => {
+                  if (onNavigate) {
+                    onNavigate('construction-registration');
+                  }
+                }}
                 style={{
                   padding: "8px 16px",
                   background: "#007AFF",
