@@ -134,7 +134,7 @@ const allMenuItems: SearchableMenuItem[] = [
 ];
 
 interface HeaderProps {
-  onNavigate?: (page: 'landing' | 'login' | 'dashboard' | 'construction-list' | 'construction-registration' | 'construction-detail' | 'estimate-list' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template') => void;
+  onNavigate?: (page: 'landing' | 'login' | 'dashboard' | 'construction-list' | 'construction-registration' | 'construction-detail' | 'estimate-list' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
@@ -328,6 +328,14 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
       if (onNavigate) {
         onNavigate('screen-permission-template');
       }
+    } else if (path === '/settings/workflow-template') {
+      if (onNavigate) {
+        onNavigate('workflow-template');
+      }
+    } else if (path === '/settings/accounting-integration') {
+      if (onNavigate) {
+        onNavigate('accounting-integration');
+      }
     }
   };
 
@@ -394,6 +402,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
       if (onNavigate) onNavigate('screen-permission');
     } else if (path === '/settings/screen-permission-template') {
       if (onNavigate) onNavigate('screen-permission-template');
+    } else if (path === '/settings/workflow-template') {
+      if (onNavigate) onNavigate('workflow-template');
+    } else if (path === '/settings/accounting-integration') {
+      if (onNavigate) onNavigate('accounting-integration');
     }
   };
 

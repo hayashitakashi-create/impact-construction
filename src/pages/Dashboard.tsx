@@ -1,644 +1,619 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  Paper,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  TextField,
-  Checkbox,
-  FormControlLabel,
-  IconButton,
-} from '@mui/material';
-import {
+  Building2,
+  FileText,
+  DollarSign,
+  ShoppingCart,
   TrendingUp,
-  Construction,
-  CheckCircle,
-  Warning,
-  ExpandMore as ExpandMoreIcon,
-  Search as SearchIcon,
-  Clear as ClearIcon,
-  MenuBook as MenuBookIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-} from '@mui/icons-material';
-import { useRegistration } from '../contexts/RegistrationContext';
+  Wallet,
+  Layers,
+  Settings,
+  Search,
+  Grid,
+  List,
+  Plus,
+  User,
+} from 'lucide-react';
 
-interface StatCardProps {
-  title: string;
-  value: string | number;
-  icon: React.ReactElement;
-  color: string;
-  change?: string;
+// TypeScript型定義
+interface Project {
+  id: number;
+  projectNumber: string;
+  projectName: string;
+  client: string;
+  endDate: string;
+  progress: number;
+  budget: number;
+  actual: number;
+  status: "受注" | "施工中" | "検査中" | "完了" | "引き渡し済み";
+  manager: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, change }) => (
-  <Card sx={{ height: '100%' }}>
-    <CardContent>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <Box
-          sx={{
-            backgroundColor: color,
-            borderRadius: 2,
-            p: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            mr: 2,
-            color: '#FFFFFF',
-          }}
-        >
-          {icon}
-        </Box>
-        <Typography variant="body2" color="text.secondary">
-          {title}
-        </Typography>
-      </Box>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-        {value}
-      </Typography>
-      {change && (
-        <Typography variant="caption" sx={{ color: '#009F77' }}>
-          {change}
-        </Typography>
-      )}
-    </CardContent>
-  </Card>
-);
+// サンプルデータ
+const projects: Project[] = [
+  {
+    id: 1,
+    projectNumber: "2024-0001",
+    projectName: "○○マンション新築工事",
+    client: "株式会社○○不動産",
+    endDate: "2024-12-31",
+    progress: 65,
+    budget: 150000000,
+    actual: 97500000,
+    status: "施工中",
+    manager: "山田太郎",
+  },
+  {
+    id: 2,
+    projectNumber: "2024-0002",
+    projectName: "△△ビル大規模改修工事",
+    client: "△△商事株式会社",
+    endDate: "2024-11-30",
+    progress: 80,
+    budget: 85000000,
+    actual: 68000000,
+    status: "施工中",
+    manager: "佐藤花子",
+  },
+  {
+    id: 3,
+    projectNumber: "2023-0156",
+    projectName: "駅前再開発プロジェクト",
+    client: "都市開発株式会社",
+    endDate: "2024-10-31",
+    progress: 88,
+    budget: 580000000,
+    actual: 510400000,
+    status: "施工中",
+    manager: "鈴木一郎",
+  },
+  {
+    id: 4,
+    projectNumber: "2024-0004",
+    projectName: "工場内設備工事",
+    client: "株式会社製造業A",
+    endDate: "2024-09-30",
+    progress: 45,
+    budget: 42000000,
+    actual: 18900000,
+    status: "施工中",
+    manager: "高橋健",
+  },
+  {
+    id: 5,
+    projectNumber: "2024-0005",
+    projectName: "商業施設内装工事",
+    client: "株式会社リテールB",
+    endDate: "2024-08-31",
+    progress: 30,
+    budget: 28000000,
+    actual: 8400000,
+    status: "施工中",
+    manager: "田中美咲",
+  },
+  {
+    id: 6,
+    projectNumber: "2024-0006",
+    projectName: "道路舗装工事（第2期）",
+    client: "○○県土木部",
+    endDate: "2024-11-15",
+    progress: 55,
+    budget: 95000000,
+    actual: 52250000,
+    status: "施工中",
+    manager: "伊藤誠",
+  },
+  {
+    id: 7,
+    projectNumber: "2024-0007",
+    projectName: "老人ホーム新築工事",
+    client: "社会福祉法人○○会",
+    endDate: "2025-03-31",
+    progress: 25,
+    budget: 280000000,
+    actual: 70000000,
+    status: "受注",
+    manager: "小林麻美",
+  },
+  {
+    id: 8,
+    projectNumber: "2023-0189",
+    projectName: "橋梁補修工事",
+    client: "国土交通省",
+    endDate: "2024-08-31",
+    progress: 100,
+    budget: 128000000,
+    actual: 125440000,
+    status: "完了",
+    manager: "中村大輔",
+  },
+];
+
+// 金額フォーマット
+const formatCurrency = (value: number): string => {
+  return `¥${(value / 10000).toLocaleString()}万`;
+};
+
+// ステータス別カラー設定
+const statusColors = {
+  受注: {
+    bg: "#EFF6FF",
+    text: "#2563EB",
+    border: "#DBEAFE",
+    gradient: "linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%)",
+  },
+  施工中: {
+    bg: "#EEF2FF",
+    text: "#4F46E5",
+    border: "#E0E7FF",
+    gradient: "linear-gradient(135deg, rgba(129, 140, 248, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)",
+  },
+  完了: {
+    bg: "#ECFDF5",
+    text: "#059669",
+    border: "#D1FAE5",
+    gradient: "linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)",
+  },
+  検査中: {
+    bg: "#FFFBEB",
+    text: "#D97706",
+    border: "#FEF3C7",
+    gradient: "linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%)",
+  },
+  引き渡し済み: {
+    bg: "#F8FAFC",
+    text: "#475569",
+    border: "#F1F5F9",
+    gradient: "linear-gradient(135deg, rgba(148, 163, 184, 0.15) 0%, rgba(100, 116, 139, 0.15) 100%)",
+  },
+};
+
+// サイドバーメニュー項目
+const sidebarItems = [
+  { icon: Building2, label: "工事", active: true },
+  { icon: FileText, label: "見積", active: false },
+  { icon: DollarSign, label: "実行予算", active: false },
+  { icon: ShoppingCart, label: "購買発注", active: false },
+  { icon: TrendingUp, label: "出来高管理", active: false },
+  { icon: Wallet, label: "支払管理", active: false },
+  { icon: Layers, label: "実行予算費目", active: false },
+  { icon: Settings, label: "その他・設定", active: false },
+];
 
 const Dashboard: React.FC = () => {
-  const { constructions, clients } = useRegistration();
-  const [searchOpen, setSearchOpen] = React.useState(false);
-
-  // 検索条件の状態
-  const [searchConstructionNumber, setSearchConstructionNumber] = React.useState('');
-  const [searchConstructionName, setSearchConstructionName] = React.useState('');
-  const [searchSiteManager, setSearchSiteManager] = React.useState('');
-
-  // 受注状態のチェックボックス
-  const [orderEstimating, setOrderEstimating] = React.useState(true);
-  const [orderReceived, setOrderReceived] = React.useState(true);
-  const [orderLost, setOrderLost] = React.useState(false);
-  const [orderStopped, setOrderStopped] = React.useState(false);
-
-  // 工事状況のチェックボックス
-  const [statusInProgress, setStatusInProgress] = React.useState(true);
-  const [statusCompleted, setStatusCompleted] = React.useState(false);
-
-  // 発注者名を取得
-  const getClientName = (clientId: number) => {
-    const client = clients.find(c => c.id === clientId);
-    if (!client) return '';
-    return client.corporateName || client.individualName;
-  };
-
-  // 請負金額を計算（工事金額 + 消費税）
-  const getTotalAmount = (constructionAmount: string, consumptionTax: string) => {
-    const amount = parseFloat(constructionAmount.replace(/,/g, '')) || 0;
-    const tax = parseFloat(consumptionTax.replace(/,/g, '')) || 0;
-    return (amount + tax).toLocaleString();
-  };
-
-  // 引渡し月を計算（契約工期終了日から引渡し期間を加算）
-  const getDeliveryMonth = (contractPeriodEnd: string, deliveryPeriod: string) => {
-    if (!contractPeriodEnd || !deliveryPeriod) return '';
-    const endDate = new Date(contractPeriodEnd);
-    const days = parseInt(deliveryPeriod, 10);
-    endDate.setDate(endDate.getDate() + days);
-    return `${endDate.getFullYear()}年${endDate.getMonth() + 1}月`;
-  };
-
-  // 検索条件でフィルタリング
-  const filteredConstructions = React.useMemo(() => {
-    return constructions.filter((construction) => {
-      // 工事番号でフィルタ（現在はダミーなのでスキップ）
-      // 実際には工事番号フィールドがないため省略
-
-      // 工事名でフィルタ
-      if (searchConstructionName && !construction.constructionName.toLowerCase().includes(searchConstructionName.toLowerCase())) {
-        return false;
-      }
-
-      // 現場担当者でフィルタ（siteAgentは数値IDなので文字列で比較）
-      if (searchSiteManager && construction.siteAgent !== searchSiteManager) {
-        return false;
-      }
-
-      // 受注状態でフィルタ - 少なくとも1つがチェックされている必要がある
-      const hasOrderStatusFilter = orderEstimating || orderReceived || orderLost || orderStopped;
-      if (hasOrderStatusFilter) {
-        const orderStatusMatches =
-          (orderEstimating && construction.orderStatus === '見積中') ||
-          (orderReceived && construction.orderStatus === '受注') ||
-          (orderLost && construction.orderStatus === '失注') ||
-          (orderStopped && construction.orderStatus === '中止');
-
-        if (!orderStatusMatches) {
-          return false;
-        }
-      }
-
-      // 工事状況でフィルタ - 現在は簡易実装
-      // 進行中: 受注状態、完成: なし（完成データがないため）
-      const hasStatusFilter = statusInProgress || statusCompleted;
-      if (hasStatusFilter) {
-        const isInProgress = construction.orderStatus === '受注' || construction.orderStatus === '見積中';
-        const isCompleted = false; // 完成データがないため常にfalse
-
-        const statusMatches =
-          (statusInProgress && isInProgress) ||
-          (statusCompleted && isCompleted);
-
-        if (!statusMatches) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-  }, [constructions, searchConstructionName, searchSiteManager,
-      orderEstimating, orderReceived, orderLost, orderStopped, statusInProgress, statusCompleted]);
-
-  const handleSearch = () => {
-    // フィルタリングはuseMemoで自動的に行われる
-    console.log('検索実行: ', filteredConstructions.length, '件');
-  };
-
-  const handleClear = () => {
-    setSearchConstructionNumber('');
-    setSearchConstructionName('');
-    setSearchSiteManager('');
-    setOrderEstimating(true);
-    setOrderReceived(true);
-    setOrderLost(false);
-    setOrderStopped(false);
-    setStatusInProgress(true);
-    setStatusCompleted(false);
-  };
-
-  const handleDetail = (id: number) => {
-    alert(`工事詳細: ID ${id}`);
-  };
-
-  const handleEdit = (id: number) => {
-    alert(`工事編集: ID ${id}`);
-  };
-
-  const handleDelete = (id: number) => {
-    if (window.confirm('この工事を削除しますか？')) {
-      alert(`工事削除: ID ${id}`);
-    }
-  };
-
   return (
-    <Box sx={{ bgcolor: '#FFFFFF', minHeight: 'calc(100vh - 56px)' }}>
-      {/* ページタイトル */}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2,
-          px: 4,
-          py: 3,
-          borderBottom: '1px solid #E4E4E5',
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      {/* サイドバー */}
+      <div
+        style={{
+          width: "216px",
+          backgroundColor: "rgba(255, 255, 255, 0.7)",
+          backdropFilter: "blur(10px)",
+          borderRight: "1px solid rgba(0, 0, 0, 0.08)",
+          padding: "24px 0",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <Box
-          sx={{
-            width: 48,
-            height: 48,
-            borderRadius: '50%',
-            backgroundColor: '#0078C8',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+        {/* ロゴ */}
+        <div style={{ paddingLeft: "24px", paddingRight: "24px", marginBottom: "32px" }}>
+          <div
+            style={{
+              width: "48px",
+              height: "48px",
+              borderRadius: "12px",
+              background: "#007AFF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: "8px",
+            }}
+          >
+            <Building2 size={28} color="#FFFFFF" />
+          </div>
+          <div style={{ fontSize: "16px", fontWeight: 600, color: "#1D1D1F" }}>IMPACT</div>
+          <div style={{ fontSize: "12px", color: "#86868B" }}>工事原価管理</div>
+        </div>
+
+        {/* メニュー */}
+        <nav style={{ flex: 1 }}>
+          {sidebarItems.map((item, index) => (
+            <motion.button
+              key={item.label}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              style={{
+                width: "100%",
+                padding: "12px 24px",
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                background: item.active ? "#007AFF" : "transparent",
+                color: item.active ? "#FFFFFF" : "#1D1D1F",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: item.active ? 600 : 400,
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                if (!item.active) {
+                  e.currentTarget.style.backgroundColor = "rgba(0, 122, 255, 0.1)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!item.active) {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }
+              }}
+            >
+              <item.icon size={20} />
+              <span>{item.label}</span>
+            </motion.button>
+          ))}
+        </nav>
+
+        {/* ユーザー情報 */}
+        <div
+          style={{
+            paddingLeft: "24px",
+            paddingRight: "24px",
+            paddingTop: "16px",
+            borderTop: "1px solid rgba(0, 0, 0, 0.08)",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
           }}
         >
-          <Construction sx={{ color: '#FFFFFF', fontSize: 28 }} />
-        </Box>
-        <Typography variant="h5" sx={{ fontWeight: 500, color: '#1C2026' }}>
-          ダッシュボード
-        </Typography>
-      </Box>
+          <div
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              background: "#5E5CE6",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <User size={20} color="#FFFFFF" />
+          </div>
+          <div>
+            <div style={{ fontSize: "14px", fontWeight: 600, color: "#1D1D1F" }}>山田太郎</div>
+            <div style={{ fontSize: "12px", color: "#86868B" }}>現場監督</div>
+          </div>
+        </div>
+      </div>
 
-      {/* 検索条件セクション */}
-      <Accordion
-        expanded={searchOpen}
-        onChange={() => setSearchOpen(!searchOpen)}
-        sx={{ mx: 4, mt: 3, bgcolor: '#EFEFF0', boxShadow: 'none' }}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          sx={{ px: 3, py: 1 }}
-        >
-          <Typography variant="body2" sx={{ color: '#1C2026', fontWeight: 500 }}>
-            検索条件 {searchOpen ? '（閉じる）' : '（開く）'}
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ bgcolor: '#FFFFFF', px: 3, py: 3 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-            {/* 1行目: 工事番号、工事名 */}
-            <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-                <Typography sx={{ minWidth: 100, fontSize: '0.875rem' }}>工事番号</Typography>
-                <TextField
-                  value={searchConstructionNumber}
-                  onChange={(e) => setSearchConstructionNumber(e.target.value)}
-                  size="small"
-                  sx={{ flex: 1 }}
-                />
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-                <Typography sx={{ minWidth: 100, fontSize: '0.875rem' }}>工事名</Typography>
-                <TextField
-                  value={searchConstructionName}
-                  onChange={(e) => setSearchConstructionName(e.target.value)}
-                  size="small"
-                  sx={{ flex: 1 }}
-                />
-              </Box>
-            </Box>
-
-            {/* 2行目: 現場担当者 */}
-            <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-                <Typography sx={{ minWidth: 100, fontSize: '0.875rem' }}>現場担当者</Typography>
-                <TextField
-                  value={searchSiteManager}
-                  onChange={(e) => setSearchSiteManager(e.target.value)}
-                  size="small"
-                  sx={{ flex: 1 }}
-                />
-              </Box>
-              <Box sx={{ flex: 1 }} />
-            </Box>
-
-            {/* 3行目: 受注状態、工事状況 */}
-            <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
-                <Typography sx={{ minWidth: 100, fontSize: '0.875rem' }}>受注状態</Typography>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={orderEstimating}
-                      onChange={(e) => setOrderEstimating(e.target.checked)}
-                      size="small"
-                    />
-                  }
-                  label="見積中"
-                  sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={orderReceived}
-                      onChange={(e) => setOrderReceived(e.target.checked)}
-                      size="small"
-                    />
-                  }
-                  label="受注"
-                  sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={orderLost}
-                      onChange={(e) => setOrderLost(e.target.checked)}
-                      size="small"
-                    />
-                  }
-                  label="失注"
-                  sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={orderStopped}
-                      onChange={(e) => setOrderStopped(e.target.checked)}
-                      size="small"
-                    />
-                  }
-                  label="中止"
-                  sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }}
-                />
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
-                <Typography sx={{ minWidth: 100, fontSize: '0.875rem' }}>工事状況</Typography>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={statusInProgress}
-                      onChange={(e) => setStatusInProgress(e.target.checked)}
-                      size="small"
-                    />
-                  }
-                  label="進行中"
-                  sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={statusCompleted}
-                      onChange={(e) => setStatusCompleted(e.target.checked)}
-                      size="small"
-                    />
-                  }
-                  label="完成"
-                  sx={{ '& .MuiFormControlLabel-label': { fontSize: '0.875rem' } }}
-                />
-              </Box>
-            </Box>
-
-            {/* 検索・クリアボタン */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 1 }}>
-              <Button
-                variant="contained"
-                startIcon={<SearchIcon />}
-                onClick={handleSearch}
-                sx={{
-                  bgcolor: '#42A5F5',
-                  color: '#FFFFFF',
-                  minWidth: 120,
-                  '&:hover': { bgcolor: '#1E88E5' },
+      {/* メインコンテンツ */}
+      <div style={{ flex: 1, padding: "32px" }}>
+        {/* ヘッダー */}
+        <div style={{ marginBottom: "32px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+            <div>
+              <h1 style={{ fontSize: "28px", fontWeight: 600, color: "#1D1D1F", margin: 0 }}>工事管理</h1>
+              <p style={{ fontSize: "14px", color: "#86868B", margin: "4px 0 0 0" }}>全9件のプロジェクト</p>
+            </div>
+            <div style={{ display: "flex", gap: "12px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "8px 16px",
+                  background: "rgba(255, 255, 255, 0.7)",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(0, 0, 0, 0.08)",
                 }}
               >
-                検 索
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<ClearIcon />}
-                onClick={handleClear}
-                sx={{
-                  bgcolor: '#42A5F5',
-                  color: '#FFFFFF',
-                  minWidth: 120,
-                  '&:hover': { bgcolor: '#1E88E5' },
+                <Search size={18} color="#86868B" />
+                <input
+                  type="text"
+                  placeholder="工事番号、工事名で検索..."
+                  style={{
+                    border: "none",
+                    background: "transparent",
+                    outline: "none",
+                    fontSize: "14px",
+                    width: "200px",
+                    color: "#1D1D1F",
+                  }}
+                />
+              </div>
+              <button
+                style={{
+                  padding: "8px 12px",
+                  background: "rgba(255, 255, 255, 0.7)",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(0, 0, 0, 0.08)",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
                 }}
               >
-                クリア
-              </Button>
-            </Box>
-          </Box>
-        </AccordionDetails>
-      </Accordion>
+                <Grid size={18} color="#1D1D1F" />
+                <span style={{ fontSize: "14px", color: "#1D1D1F" }}>カード</span>
+              </button>
+              <button
+                style={{
+                  padding: "8px 12px",
+                  background: "rgba(255, 255, 255, 0.7)",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(0, 0, 0, 0.08)",
+                  cursor: "pointer",
+                }}
+              >
+                <List size={18} color="#1D1D1F" />
+              </button>
+              <button
+                style={{
+                  padding: "8px 16px",
+                  background: "#007AFF",
+                  borderRadius: "8px",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  color: "#FFFFFF",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                }}
+              >
+                <Plus size={18} />
+                <span>新規登録</span>
+              </button>
+            </div>
+          </div>
+        </div>
 
-      {/* アクションボタン */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: 2,
-          px: 4,
-          py: 3,
-        }}
-      >
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: '#C1E6EF',
-            color: '#1C2026',
-            fontWeight: 500,
-            textTransform: 'none',
-            boxShadow: 'none',
-            '&:hover': {
-              backgroundColor: '#B0D9E5',
-              boxShadow: 'none',
-            },
+        {/* サマリーカード */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "16px",
+            marginBottom: "32px",
           }}
         >
-          お知らせ (2025/05/21)
-        </Button>
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: '#C1E6EF',
-            color: '#1C2026',
-            fontWeight: 500,
-            textTransform: 'none',
-            boxShadow: 'none',
-            '&:hover': {
-              backgroundColor: '#B0D9E5',
-              boxShadow: 'none',
-            },
-          }}
-        >
-          マイ工事
-        </Button>
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: '#C1E6EF',
-            color: '#1C2026',
-            fontWeight: 500,
-            textTransform: 'none',
-            boxShadow: 'none',
-            '&:hover': {
-              backgroundColor: '#B0D9E5',
-              boxShadow: 'none',
-            },
-          }}
-        >
-          申請/承認
-        </Button>
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: '#C1E6EF',
-            color: '#1C2026',
-            fontWeight: 500,
-            textTransform: 'none',
-            boxShadow: 'none',
-            '&:hover': {
-              backgroundColor: '#B0D9E5',
-              boxShadow: 'none',
-            },
-          }}
-        >
-          報告
-        </Button>
-      </Box>
+          {[
+            { label: "予算", value: "¥15,000万", actual: "¥9,750万", icon: DollarSign, bgColor: "#DBEAFE" },
+            { label: "予算", value: "¥8,500万", actual: "¥6,800万", icon: DollarSign, bgColor: "#D1FAE5" },
+            { label: "予算", value: "¥32,000万", actual: "¥30,400万", icon: DollarSign, bgColor: "#FED7AA" },
+            { label: "予算", value: "¥4,200万", actual: "¥1,890万", icon: DollarSign, bgColor: "#FECACA" },
+          ].map((card, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              style={{
+                background: "rgba(255, 255, 255, 0.7)",
+                backdropFilter: "blur(10px)",
+                borderRadius: "16px",
+                padding: "20px",
+                border: "1px solid rgba(0, 0, 0, 0.08)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                <div
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "12px",
+                    background: card.bgColor,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <card.icon size={24} color="#1D1D1F" />
+                </div>
+                <div style={{ fontSize: "12px", color: "#86868B" }}>{card.label}</div>
+              </div>
+              <div style={{ fontSize: "24px", fontWeight: 700, color: "#1D1D1F", marginBottom: "4px" }}>
+                {card.value}
+              </div>
+              <div style={{ fontSize: "14px", color: "#007AFF" }}>実績 {card.actual}</div>
+            </motion.div>
+          ))}
+        </div>
 
-      {/* コンテンツエリア */}
-      <Box sx={{ px: 4, pb: 4 }}>
-        {/* 統計カード */}
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: 3,
-            mb: 3,
+        {/* プロジェクトカード */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "20px",
           }}
         >
-          <StatCard
-            title="進行中の工事"
-            value="12"
-            icon={<Construction />}
-            color="#0078C8"
-            change="+2 from last month"
-          />
-          <StatCard
-            title="完了工事"
-            value="45"
-            icon={<CheckCircle />}
-            color="#009F77"
-            change="+5 from last month"
-          />
-          <StatCard
-            title="総予算"
-            value="5.2億円"
-            icon={<TrendingUp />}
-            color="#95CCC5"
-          />
-          <StatCard
-            title="要注意案件"
-            value="3"
-            icon={<Warning />}
-            color="#DC1D1D"
-          />
-        </Box>
+          {projects.map((project, index) => {
+            const colors = statusColors[project.status];
+            return (
+              <motion.div
+                key={project.id}
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
+                whileHover={{ y: -8, transition: { duration: 0.2 } }}
+                style={{
+                  position: "relative",
+                  background: "rgba(255, 255, 255, 0.7)",
+                  backdropFilter: "blur(10px)",
+                  borderRadius: "16px",
+                  padding: "20px",
+                  border: `1px solid ${colors.border}`,
+                  cursor: "pointer",
+                  overflow: "hidden",
+                }}
+                onMouseEnter={(e) => {
+                  const card = e.currentTarget;
+                  const glow = card.querySelector('[data-glow]') as HTMLElement;
+                  const neon = card.querySelector('[data-neon]') as HTMLElement;
+                  const accent = card.querySelector('[data-accent]') as HTMLElement;
+                  if (glow) glow.style.opacity = "1";
+                  if (neon) neon.style.opacity = "1";
+                  if (accent) accent.style.opacity = "1";
+                }}
+                onMouseLeave={(e) => {
+                  const card = e.currentTarget;
+                  const glow = card.querySelector('[data-glow]') as HTMLElement;
+                  const neon = card.querySelector('[data-neon]') as HTMLElement;
+                  const accent = card.querySelector('[data-accent]') as HTMLElement;
+                  if (glow) glow.style.opacity = "0";
+                  if (neon) neon.style.opacity = "0";
+                  if (accent) accent.style.opacity = "0";
+                }}
+              >
+                {/* グラデーション背景グロー */}
+                <div
+                  data-glow
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    opacity: 0,
+                    transition: "opacity 0.5s",
+                    background: colors.gradient,
+                    filter: "blur(60px)",
+                    zIndex: -1,
+                  }}
+                />
 
-        {/* 工事一覧 */}
-        <Card sx={{ mt: 3 }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  進行中の工事一覧
-                </Typography>
-                <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-                  {filteredConstructions.length}件表示
-                </Typography>
-              </Box>
-              <Button variant="contained" size="small">
-                すべて表示
-              </Button>
-            </Box>
-            <TableContainer component={Paper} elevation={0}>
-              <Table>
-                <TableHead>
-                  <TableRow sx={{ bgcolor: '#B0BEC5' }}>
-                    <TableCell sx={{ color: '#1C2026', fontWeight: 600, minWidth: 120 }}>
-                      工事番号
-                    </TableCell>
-                    <TableCell sx={{ color: '#1C2026', fontWeight: 600, minWidth: 300 }}>
-                      工事名
-                    </TableCell>
-                    <TableCell sx={{ color: '#1C2026', fontWeight: 600, minWidth: 150 }}>
-                      発注者
-                    </TableCell>
-                    <TableCell sx={{ color: '#1C2026', fontWeight: 600, minWidth: 150 }}>
-                      請負金額（税込）
-                    </TableCell>
-                    <TableCell sx={{ color: '#1C2026', fontWeight: 600, minWidth: 100 }}>
-                      引渡し月
-                    </TableCell>
-                    <TableCell sx={{ color: '#1C2026', fontWeight: 600, minWidth: 100 }}>
-                      受注状態
-                    </TableCell>
-                    <TableCell sx={{ color: '#1C2026', fontWeight: 600, minWidth: 100 }}>
-                      完成月
-                    </TableCell>
-                    <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 60 }}>
-                      詳細
-                    </TableCell>
-                    <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 60 }}>
-                      修正
-                    </TableCell>
-                    <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 60 }}>
-                      削除
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredConstructions.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={10} sx={{ textAlign: 'center', py: 4 }}>
-                        <Typography sx={{ color: '#666', fontSize: '0.875rem' }}>
-                          検索条件に一致する工事が見つかりません
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    filteredConstructions.map((construction) => (
-                      <TableRow key={construction.id} sx={{ '&:hover': { bgcolor: '#F5F5F5' } }}>
-                        <TableCell>
-                          <Typography sx={{ fontSize: '0.875rem' }}>—</Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography sx={{ fontSize: '0.875rem' }}>
-                            {construction.constructionName}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography sx={{ fontSize: '0.875rem' }}>
-                            {getClientName(construction.clientId)}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography sx={{ fontSize: '0.875rem' }}>
-                            ¥{getTotalAmount(construction.constructionAmount, construction.consumptionTax)}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography sx={{ fontSize: '0.875rem' }}>
-                            {getDeliveryMonth(construction.contractPeriodEnd, construction.deliveryPeriod)}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography sx={{ fontSize: '0.875rem' }}>
-                            {construction.orderStatus}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography sx={{ fontSize: '0.875rem' }}>—</Typography>
-                        </TableCell>
-                        <TableCell>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleDetail(construction.id)}
-                            sx={{ color: '#42A5F5' }}
-                          >
-                            <MenuBookIcon fontSize="small" />
-                          </IconButton>
-                        </TableCell>
-                        <TableCell>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleEdit(construction.id)}
-                            sx={{ color: '#42A5F5' }}
-                          >
-                            <EditIcon fontSize="small" />
-                          </IconButton>
-                        </TableCell>
-                        <TableCell>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleDelete(construction.id)}
-                            sx={{ color: '#42A5F5' }}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </CardContent>
-        </Card>
-      </Box>
-    </Box>
+                {/* ネオンボーダーグロー */}
+                <div
+                  data-neon
+                  style={{
+                    position: "absolute",
+                    inset: "-1px",
+                    opacity: 0,
+                    transition: "opacity 0.5s",
+                    background: colors.gradient,
+                    filter: "blur(20px)",
+                    borderRadius: "16px",
+                    zIndex: -1,
+                  }}
+                />
+
+                {/* トップアクセントライン */}
+                <div
+                  data-accent
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: "4px",
+                    opacity: 0,
+                    transition: "opacity 0.5s",
+                    background: colors.gradient,
+                  }}
+                />
+
+                {/* カード内容 */}
+                <div style={{ position: "relative", zIndex: 1 }}>
+                  {/* ステータスバッジと工事番号 */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                    <span
+                      style={{
+                        padding: "4px 12px",
+                        borderRadius: "6px",
+                        fontSize: "12px",
+                        fontWeight: 600,
+                        background: colors.bg,
+                        color: colors.text,
+                      }}
+                    >
+                      {project.status}
+                    </span>
+                    <span style={{ fontSize: "12px", color: "#007AFF", fontWeight: 600 }}>{project.projectNumber}</span>
+                  </div>
+
+                  {/* 工事名 */}
+                  <h3 style={{ fontSize: "16px", fontWeight: 600, color: "#1D1D1F", margin: "0 0 8px 0" }}>
+                    {project.projectName}
+                  </h3>
+
+                  {/* 顧客名 */}
+                  <div style={{ fontSize: "13px", color: "#86868B", marginBottom: "16px", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <User size={14} />
+                    {project.client}
+                  </div>
+
+                  {/* 進捗率 */}
+                  <div style={{ marginBottom: "12px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                      <span style={{ fontSize: "12px", color: "#86868B" }}>進捗率</span>
+                      <span style={{ fontSize: "14px", fontWeight: 700, color: "#1D1D1F" }}>{project.progress}%</span>
+                    </div>
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "8px",
+                        background: "#F5F5F7",
+                        borderRadius: "4px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: `${project.progress}%`,
+                          height: "100%",
+                          background: colors.text,
+                          transition: "width 0.5s",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 予算・実績 */}
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+                    <div>
+                      <div style={{ fontSize: "11px", color: "#86868B" }}>予算</div>
+                      <div style={{ fontSize: "14px", fontWeight: 600, color: "#1D1D1F" }}>{formatCurrency(project.budget)}</div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: "11px", color: "#86868B" }}>実績</div>
+                      <div style={{ fontSize: "14px", fontWeight: 600, color: "#007AFF" }}>{formatCurrency(project.actual)}</div>
+                    </div>
+                  </div>
+
+                  {/* 担当者・完了予定日 */}
+                  <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "12px", borderTop: "1px solid rgba(0, 0, 0, 0.08)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <div
+                        style={{
+                          width: "24px",
+                          height: "24px",
+                          borderRadius: "50%",
+                          background: "#5E5CE6",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <User size={14} color="#FFFFFF" />
+                      </div>
+                      <span style={{ fontSize: "12px", color: "#1D1D1F" }}>{project.manager}</span>
+                    </div>
+                    <span style={{ fontSize: "12px", color: "#86868B" }}>{project.endDate}</span>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -24,131 +24,109 @@ import CommonTemporarySettings from './pages/CommonTemporarySettings';
 import SiteExpenseSettings from './pages/SiteExpenseSettings';
 import ScreenPermissionRegistration from './pages/ScreenPermissionRegistration';
 import ScreenPermissionTemplateRegistration from './pages/ScreenPermissionTemplateRegistration';
+import WorkflowTemplateRegistration from './pages/WorkflowTemplateRegistration';
+import AccountingSoftwareIntegration from './pages/AccountingSoftwareIntegration';
 import { RegistrationProvider } from './contexts/RegistrationContext';
 
 function App() {
-  // LPページを一時的に非表示：後で表示する場合は 'dashboard' を 'landing' に戻す
-  const [currentPage, setCurrentPage] = React.useState<'landing' | 'login' | 'dashboard' | 'construction-list' | 'construction-registration' | 'construction-detail' | 'estimate-list' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template'>('dashboard');
+  const [currentPage, setCurrentPage] = React.useState<'landing' | 'login' | 'dashboard' | 'construction-list' | 'construction-registration' | 'construction-detail' | 'estimate-list' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration'>('dashboard');
   const [selectedConstructionId, setSelectedConstructionId] = React.useState<number | null>(null);
   const [editMode, setEditMode] = React.useState<boolean>(false);
 
-  // 工事詳細表示
   const handleViewConstructionDetail = (id: number) => {
     setSelectedConstructionId(id);
     setCurrentPage('construction-detail');
   };
 
-  // 工事編集
   const handleEditConstruction = (id: number) => {
     setSelectedConstructionId(id);
     setEditMode(true);
     setCurrentPage('construction-registration');
   };
 
-  // 新規工事登録
   const handleNewConstruction = () => {
     setSelectedConstructionId(null);
     setEditMode(false);
     setCurrentPage('construction-registration');
   };
 
-  // 工事一覧に戻る
   const handleBackToList = () => {
     setCurrentPage('construction-list');
     setSelectedConstructionId(null);
     setEditMode(false);
   };
 
-  // 工事保存後の処理
   const handleSaveConstruction = () => {
     if (editMode && selectedConstructionId) {
-      // 編集モードの場合は工事詳細に戻る
       setEditMode(false);
       setCurrentPage('construction-detail');
     } else {
-      // 新規登録の場合は工事一覧に戻る
       setCurrentPage('construction-list');
       setSelectedConstructionId(null);
       setEditMode(false);
     }
   };
 
-  // LPページを表示（一時的にコメントアウト）
-  // if (currentPage === 'landing') {
-  //   return (
-  //     <ThemeProvider theme={theme}>
-  //       <CssBaseline />
-  //       <LandingPage onNavigateToLogin={() => setCurrentPage('login')} />
-  //     </ThemeProvider>
-  //   );
-  // }
-
-  // ログイン画面を表示（一時的にコメントアウト）
-  // if (currentPage === 'login') {
-  //   return (
-  //     <ThemeProvider theme={theme}>
-  //       <CssBaseline />
-  //       <Login onLogin={() => setCurrentPage('dashboard')} />
-  //     </ThemeProvider>
-  //   );
-  // }
-
-  // ダッシュボードまたは工事登録を表示（ログイン後）
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <RegistrationProvider>
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          <Header onNavigate={setCurrentPage} />
-          <Box
-            component="main"
-            sx={{
-              flexGrow: 1,
-              bgcolor: (currentPage === 'construction-registration' || currentPage === 'construction-list' || currentPage === 'construction-detail' || currentPage === 'estimate-list' || currentPage === 'construction-category' || currentPage === 'construction-type' || currentPage === 'building-usage' || currentPage === 'client' || currentPage === 'user' || currentPage === 'company' || currentPage === 'subcontractor-bulk' || currentPage === 'subcontractor' || currentPage === 'work-type' || currentPage === 'material' || currentPage === 'lease-item' || currentPage === 'common-temporary' || currentPage === 'site-expense' || currentPage === 'screen-permission' || currentPage === 'screen-permission-template') ? '#F6F6F6' : '#FFFFFF',
-              mt: '56px', // ヘッダーの高さ分のマージン
-            }}
-          >
-            {currentPage === 'dashboard' && <Dashboard />}
-            {currentPage === 'construction-list' && (
-              <ConstructionList
-                onViewDetail={handleViewConstructionDetail}
-                onEdit={handleEditConstruction}
-                onNew={handleNewConstruction}
-              />
-            )}
-            {currentPage === 'construction-registration' && (
-              <ConstructionRegistration
-                constructionId={selectedConstructionId}
-                editMode={editMode}
-                onSave={handleSaveConstruction}
-              />
-            )}
-            {currentPage === 'construction-detail' && selectedConstructionId && (
-              <ConstructionDetail
-                constructionId={selectedConstructionId}
-                onBack={handleBackToList}
-                onEdit={() => handleEditConstruction(selectedConstructionId)}
-              />
-            )}
-            {currentPage === 'estimate-list' && <EstimateList />}
-            {currentPage === 'construction-category' && <ConstructionCategoryRegistration />}
-            {currentPage === 'construction-type' && <ConstructionTypeRegistration />}
-            {currentPage === 'building-usage' && <BuildingUsageRegistration />}
-            {currentPage === 'client' && <ClientRegistration />}
-            {currentPage === 'user' && <UserRegistration />}
-            {currentPage === 'company' && <CompanyRegistration />}
-            {currentPage === 'subcontractor-bulk' && <SubcontractorBulkRegistration />}
-            {currentPage === 'subcontractor' && <SubcontractorRegistration />}
-            {currentPage === 'work-type' && <WorkTypeRegistration />}
-            {currentPage === 'material' && <MaterialRegistration />}
-            {currentPage === 'lease-item' && <LeaseItemRegistration />}
-            {currentPage === 'common-temporary' && <CommonTemporarySettings />}
-            {currentPage === 'site-expense' && <SiteExpenseSettings />}
-            {currentPage === 'screen-permission' && <ScreenPermissionRegistration />}
-            {currentPage === 'screen-permission-template' && <ScreenPermissionTemplateRegistration />}
+        {currentPage === 'dashboard' ? (
+          <Dashboard />
+        ) : (
+          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Header onNavigate={setCurrentPage} />
+            <Box
+              component="main"
+              sx={{
+                flexGrow: 1,
+                bgcolor: (currentPage === 'construction-registration' || currentPage === 'construction-list' || currentPage === 'construction-detail' || currentPage === 'estimate-list' || currentPage === 'construction-category' || currentPage === 'construction-type' || currentPage === 'building-usage' || currentPage === 'client' || currentPage === 'user' || currentPage === 'company' || currentPage === 'subcontractor-bulk' || currentPage === 'subcontractor' || currentPage === 'work-type' || currentPage === 'material' || currentPage === 'lease-item' || currentPage === 'common-temporary' || currentPage === 'site-expense' || currentPage === 'screen-permission' || currentPage === 'screen-permission-template' || currentPage === 'workflow-template' || currentPage === 'accounting-integration') ? '#F6F6F6' : '#FFFFFF',
+                mt: '56px',
+              }}
+            >
+              {currentPage === 'construction-list' && (
+                <ConstructionList
+                  onViewDetail={handleViewConstructionDetail}
+                  onEdit={handleEditConstruction}
+                  onNew={handleNewConstruction}
+                />
+              )}
+              {currentPage === 'construction-registration' && (
+                <ConstructionRegistration
+                  constructionId={selectedConstructionId}
+                  editMode={editMode}
+                  onSave={handleSaveConstruction}
+                />
+              )}
+              {currentPage === 'construction-detail' && selectedConstructionId && (
+                <ConstructionDetail
+                  constructionId={selectedConstructionId}
+                  onBack={handleBackToList}
+                  onEdit={() => handleEditConstruction(selectedConstructionId)}
+                />
+              )}
+              {currentPage === 'estimate-list' && <EstimateList />}
+              {currentPage === 'construction-category' && <ConstructionCategoryRegistration />}
+              {currentPage === 'construction-type' && <ConstructionTypeRegistration />}
+              {currentPage === 'building-usage' && <BuildingUsageRegistration />}
+              {currentPage === 'client' && <ClientRegistration />}
+              {currentPage === 'user' && <UserRegistration />}
+              {currentPage === 'company' && <CompanyRegistration />}
+              {currentPage === 'subcontractor-bulk' && <SubcontractorBulkRegistration />}
+              {currentPage === 'subcontractor' && <SubcontractorRegistration />}
+              {currentPage === 'work-type' && <WorkTypeRegistration />}
+              {currentPage === 'material' && <MaterialRegistration />}
+              {currentPage === 'lease-item' && <LeaseItemRegistration />}
+              {currentPage === 'common-temporary' && <CommonTemporarySettings />}
+              {currentPage === 'site-expense' && <SiteExpenseSettings />}
+              {currentPage === 'screen-permission' && <ScreenPermissionRegistration />}
+              {currentPage === 'screen-permission-template' && <ScreenPermissionTemplateRegistration />}
+              {currentPage === 'workflow-template' && <WorkflowTemplateRegistration />}
+              {currentPage === 'accounting-integration' && <AccountingSoftwareIntegration />}
+            </Box>
+            <Footer />
           </Box>
-          <Footer />
-        </Box>
+        )}
       </RegistrationProvider>
     </ThemeProvider>
   );
