@@ -26,6 +26,13 @@ import {
   Close as CloseIcon,
   Settings as SettingsIcon,
 } from '@mui/icons-material';
+import Sidebar from '../components/Layout/Sidebar';
+
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface SubcontractorBulkRegistrationProps {
+  onNavigate?: (page: PageType) => void;
+}
 
 interface SubcontractorData {
   業者コード: string;
@@ -55,7 +62,7 @@ interface ErrorMessage {
   エラーメッセージ: string;
 }
 
-const SubcontractorBulkRegistration: React.FC = () => {
+const SubcontractorBulkRegistration: React.FC<SubcontractorBulkRegistrationProps> = ({ onNavigate }) => {
   const [torihikisakiFile, setTorihikisakiFile] = useState<File | null>(null);
   const [hiritsuFile, setHiritsuFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -218,42 +225,52 @@ const SubcontractorBulkRegistration: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* ページタイトル */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: 600, color: '#1C2026' }}>
-          外注業者一括登録
-        </Typography>
-      </Box>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      <Sidebar currentPage="subcontractor-bulk" onNavigate={onNavigate} />
+
+      <Box sx={{ flex: 1, p: 3 }}>
+        {/* ヘッダー */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box
+              sx={{
+                bgcolor: '#007AFF',
+                borderRadius: '50%',
+                width: 48,
+                height: 48,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: 2,
+              }}
+            >
+              <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
+            </Box>
+            <Typography variant="h5" sx={{ color: '#1D1D1F', fontWeight: 600 }}>
+              外注業者一括登録
+            </Typography>
+          </Box>
+        </Box>
 
       {/* 外注業者一括登録カード */}
       <Paper
         sx={{
           p: 3,
           mb: 3,
-          borderRadius: 2,
-          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+          background: 'rgba(255, 255, 255, 0.7)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '16px',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          boxShadow: 'none',
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-          <Box
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              bgcolor: '#0078C8',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mr: 2,
-            }}
-          >
-            <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 24 }} />
-          </Box>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            外注業者一括登録
-          </Typography>
-        </Box>
 
         {/* ファイルアップロードセクション */}
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-end' }}>
@@ -371,10 +388,10 @@ const SubcontractorBulkRegistration: React.FC = () => {
               onClick={handleUpload}
               disabled={!torihikisakiFile || !hiritsuFile || uploading}
               sx={{
-                bgcolor: '#5DADE2',
+                bgcolor: '#007AFF',
                 color: '#FFFFFF',
                 '&:hover': {
-                  bgcolor: '#3498DB',
+                  bgcolor: '#0051D5',
                 },
                 '&:disabled': {
                   bgcolor: '#CCCCCC',
@@ -386,6 +403,7 @@ const SubcontractorBulkRegistration: React.FC = () => {
                 fontSize: '0.875rem',
                 fontWeight: 500,
                 whiteSpace: 'nowrap',
+                borderRadius: '8px',
               }}
             >
               {uploading ? 'アップロード中...' : 'アップロード'}
@@ -420,7 +438,7 @@ const SubcontractorBulkRegistration: React.FC = () => {
             <TableContainer component={Paper} variant="outlined">
               <Table size="small">
                 <TableHead>
-                  <TableRow sx={{ bgcolor: '#F6F6F6' }}>
+                  <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                     <TableCell sx={{ fontWeight: 600 }}>ファイル名</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>行番号</TableCell>
                     <TableCell sx={{ fontWeight: 600 }}>タイトル</TableCell>
@@ -611,15 +629,37 @@ const SubcontractorBulkRegistration: React.FC = () => {
           )}
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setPreviewDialogOpen(false)} variant="outlined">
+          <Button
+            onClick={() => setPreviewDialogOpen(false)}
+            variant="outlined"
+            sx={{
+              borderColor: '#007AFF',
+              color: '#007AFF',
+              '&:hover': {
+                borderColor: '#0051D5',
+                bgcolor: 'rgba(0, 122, 255, 0.08)',
+              },
+              borderRadius: '8px',
+            }}
+          >
             キャンセル
           </Button>
-          <Button onClick={() => setPreviewDialogOpen(false)} variant="contained">
+          <Button
+            onClick={() => setPreviewDialogOpen(false)}
+            variant="contained"
+            sx={{
+              bgcolor: '#007AFF',
+              color: '#FFFFFF',
+              '&:hover': { bgcolor: '#0051D5' },
+              borderRadius: '8px',
+            }}
+          >
             保存
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+      </Box>
+    </div>
   );
 };
 

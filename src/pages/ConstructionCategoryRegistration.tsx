@@ -31,8 +31,15 @@ import {
   Close as CloseIcon,
 } from '@mui/icons-material';
 import { useRegistration, ConstructionCategory } from '../contexts/RegistrationContext';
+import Sidebar from '../components/Layout/Sidebar';
 
-const ConstructionCategoryRegistration: React.FC = () => {
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface ConstructionCategoryRegistrationProps {
+  onNavigate?: (page: PageType) => void;
+}
+
+const ConstructionCategoryRegistration: React.FC<ConstructionCategoryRegistrationProps> = ({ onNavigate }) => {
   const { categories, setCategories } = useRegistration();
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -85,29 +92,31 @@ const ConstructionCategoryRegistration: React.FC = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: '#F6F6F6', minHeight: 'calc(100vh - 56px)', py: 3 }}>
-      <Container maxWidth="lg">
-        {/* ヘッダー */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box
-              sx={{
-                bgcolor: '#0078C8',
-                borderRadius: '50%',
-                width: 48,
-                height: 48,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mr: 2,
-              }}
-            >
-              <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
+    <div style={{ display: "flex", minHeight: "100vh", background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      <Sidebar currentPage="construction-category" onNavigate={onNavigate} />
+      <Box sx={{ flex: 1, p: 3 }}>
+        <Container maxWidth="lg">
+          {/* ヘッダー */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box
+                sx={{
+                  bgcolor: '#007AFF',
+                  borderRadius: '50%',
+                  width: 48,
+                  height: 48,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mr: 2,
+                }}
+              >
+                <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" sx={{ color: '#1D1D1F', fontWeight: 600, fontSize: 28 }}>
+                工事分類登録
+              </Typography>
             </Box>
-            <Typography variant="h4" sx={{ color: '#1C2026', fontWeight: 600 }}>
-              工事分類登録
-            </Typography>
-          </Box>
 
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button
@@ -115,9 +124,10 @@ const ConstructionCategoryRegistration: React.FC = () => {
               startIcon={<AddIcon />}
               onClick={handleOpenDialog}
               sx={{
-                bgcolor: '#42A5F5',
+                bgcolor: '#007AFF',
                 color: '#FFFFFF',
-                '&:hover': { bgcolor: '#1E88E5' },
+                '&:hover': { bgcolor: '#0051D5' },
+                borderRadius: '8px',
               }}
             >
               新規登録
@@ -126,9 +136,10 @@ const ConstructionCategoryRegistration: React.FC = () => {
               variant="contained"
               startIcon={<SaveIcon />}
               sx={{
-                bgcolor: '#42A5F5',
+                bgcolor: '#007AFF',
                 color: '#FFFFFF',
-                '&:hover': { bgcolor: '#1E88E5' },
+                '&:hover': { bgcolor: '#0051D5' },
+                borderRadius: '8px',
               }}
             >
               保存
@@ -137,10 +148,16 @@ const ConstructionCategoryRegistration: React.FC = () => {
         </Box>
 
         {/* テーブル */}
-        <TableContainer sx={{ bgcolor: '#FFFFFF' }}>
+        <TableContainer sx={{
+          background: 'rgba(255, 255, 255, 0.7)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '16px',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          boxShadow: 'none',
+        }}>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#B0BEC5' }}>
+              <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                 <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 80 }}>削除</TableCell>
                 <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>工事分類名</TableCell>
                 <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>工事分類種別</TableCell>
@@ -153,7 +170,7 @@ const ConstructionCategoryRegistration: React.FC = () => {
                   <TableCell>
                     <IconButton
                       onClick={() => handleDeleteCategory(category.id)}
-                      sx={{ color: '#42A5F5' }}
+                      sx={{ color: '#007AFF' }}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -254,9 +271,10 @@ const ConstructionCategoryRegistration: React.FC = () => {
             <Button
               onClick={handleCloseDialog}
               sx={{
-                bgcolor: '#42A5F5',
+                bgcolor: '#007AFF',
                 color: '#FFFFFF',
-                '&:hover': { bgcolor: '#1E88E5' },
+                '&:hover': { bgcolor: '#0051D5' },
+                borderRadius: '8px',
               }}
             >
               キャンセル
@@ -265,9 +283,10 @@ const ConstructionCategoryRegistration: React.FC = () => {
               onClick={handleAddCategory}
               variant="contained"
               sx={{
-                bgcolor: '#42A5F5',
+                bgcolor: '#007AFF',
                 color: '#FFFFFF',
-                '&:hover': { bgcolor: '#1E88E5' },
+                '&:hover': { bgcolor: '#0051D5' },
+                borderRadius: '8px',
               }}
             >
               登録
@@ -276,6 +295,7 @@ const ConstructionCategoryRegistration: React.FC = () => {
         </Dialog>
       </Container>
     </Box>
+    </div>
   );
 };
 

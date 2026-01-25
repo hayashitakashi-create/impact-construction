@@ -33,6 +33,13 @@ import {
   Search as SearchIcon,
   Clear as ClearIcon,
 } from '@mui/icons-material';
+import Sidebar from '../components/Layout/Sidebar';
+
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface WorkTypeRegistrationProps {
+  onNavigate?: (page: PageType) => void;
+}
 
 interface WorkType {
   id: number;
@@ -42,7 +49,7 @@ interface WorkType {
   客出工種名: string;
 }
 
-const WorkTypeRegistration: React.FC = () => {
+const WorkTypeRegistration: React.FC<WorkTypeRegistrationProps> = ({ onNavigate }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [editingWorkType, setEditingWorkType] = useState<WorkType | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -140,44 +147,55 @@ const WorkTypeRegistration: React.FC = () => {
   });
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* ページタイトルと新規登録ボタン */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      <Sidebar currentPage="work-type" onNavigate={onNavigate} />
+
+      <Box sx={{ flex: 1, p: 3 }}>
+        {/* ページタイトルと新規登録ボタン */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box
+              sx={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                bgcolor: '#007AFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: 2,
+              }}
+            >
+              <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
+            </Box>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: '#1D1D1F' }}>
+              工種登録
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenDialog()}
             sx={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              bgcolor: '#0078C8',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mr: 2,
+              bgcolor: '#007AFF',
+              '&:hover': {
+                bgcolor: '#0051D5',
+              },
+              textTransform: 'none',
+              fontSize: '0.875rem',
+              borderRadius: '8px',
             }}
           >
-            <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 24 }} />
-          </Box>
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#1C2026' }}>
-            工種登録
-          </Typography>
+            + 新規登録
+          </Button>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenDialog()}
-          sx={{
-            bgcolor: '#5DADE2',
-            '&:hover': {
-              bgcolor: '#3498DB',
-            },
-            textTransform: 'none',
-            fontSize: '0.875rem',
-          }}
-        >
-          + 新規登録
-        </Button>
-      </Box>
 
       {/* 検索条件 */}
       <Box sx={{ mb: 2 }}>
@@ -200,7 +218,7 @@ const WorkTypeRegistration: React.FC = () => {
           </Typography>
           <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
             {searchOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            <Typography variant="body2" sx={{ color: '#0078C8', ml: 0.5 }}>
+            <Typography variant="body2" sx={{ color: '#007AFF', ml: 0.5 }}>
               （{searchOpen ? '閉じる' : '開く'}）
             </Typography>
           </Box>
@@ -234,11 +252,12 @@ const WorkTypeRegistration: React.FC = () => {
                 variant="contained"
                 startIcon={<SearchIcon />}
                 sx={{
-                  bgcolor: '#5DADE2',
+                  bgcolor: '#007AFF',
                   '&:hover': {
-                    bgcolor: '#3498DB',
+                    bgcolor: '#0051D5',
                   },
                   textTransform: 'none',
+                  borderRadius: '8px',
                 }}
               >
                 検　索
@@ -248,12 +267,13 @@ const WorkTypeRegistration: React.FC = () => {
                 startIcon={<ClearIcon />}
                 sx={{
                   textTransform: 'none',
-                  borderColor: '#5DADE2',
-                  color: '#5DADE2',
+                  borderColor: '#007AFF',
+                  color: '#007AFF',
                   '&:hover': {
-                    borderColor: '#3498DB',
-                    bgcolor: 'rgba(93, 173, 226, 0.1)',
+                    borderColor: '#0051D5',
+                    bgcolor: 'rgba(0, 122, 255, 0.1)',
                   },
+                  borderRadius: '8px',
                 }}
                 onClick={() => {
                   setSearchKeyword('');
@@ -268,11 +288,17 @@ const WorkTypeRegistration: React.FC = () => {
       </Box>
 
       {/* テーブル */}
-      <Paper sx={{ borderRadius: 1, overflow: 'hidden' }}>
+      <Paper sx={{
+        borderRadius: 1,
+        overflow: 'hidden',
+        background: 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+      }}>
         <TableContainer>
           <Table size="small">
             <TableHead>
-              <TableRow sx={{ bgcolor: '#E8E8E8' }}>
+              <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                 <TableCell sx={{ fontWeight: 600, width: 60, fontSize: '0.75rem' }}>修正</TableCell>
                 <TableCell sx={{ fontWeight: 600, width: 60, fontSize: '0.75rem' }}>削除</TableCell>
                 <TableCell sx={{ fontWeight: 600, width: 100, fontSize: '0.75rem' }}>科目番号</TableCell>
@@ -288,7 +314,7 @@ const WorkTypeRegistration: React.FC = () => {
                     <IconButton
                       size="small"
                       onClick={() => handleOpenDialog(workType)}
-                      sx={{ color: '#0078C8' }}
+                      sx={{ color: '#007AFF' }}
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
@@ -297,7 +323,7 @@ const WorkTypeRegistration: React.FC = () => {
                     <IconButton
                       size="small"
                       onClick={() => handleDelete(workType.id)}
-                      sx={{ color: '#5DADE2' }}
+                      sx={{ color: '#007AFF' }}
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>
@@ -410,11 +436,12 @@ const WorkTypeRegistration: React.FC = () => {
             onClick={handleCloseDialog}
             variant="contained"
             sx={{
-              bgcolor: '#5DADE2',
+              bgcolor: '#007AFF',
               '&:hover': {
-                bgcolor: '#3498DB',
+                bgcolor: '#0051D5',
               },
               textTransform: 'none',
+              borderRadius: '8px',
             }}
           >
             キャンセル
@@ -423,19 +450,21 @@ const WorkTypeRegistration: React.FC = () => {
             onClick={handleSave}
             variant="contained"
             sx={{
-              bgcolor: '#D3E8F5',
-              color: '#666666',
+              bgcolor: '#007AFF',
+              color: '#FFFFFF',
               '&:hover': {
-                bgcolor: '#B8D9ED',
+                bgcolor: '#0051D5',
               },
               textTransform: 'none',
+              borderRadius: '8px',
             }}
           >
             登録
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+      </Box>
+    </div>
   );
 };
 

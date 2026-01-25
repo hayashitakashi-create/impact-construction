@@ -21,6 +21,13 @@ import {
   DragIndicator as DragIndicatorIcon,
   Save as SaveIcon,
 } from '@mui/icons-material';
+import Sidebar from '../components/Layout/Sidebar';
+
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface CommonTemporarySettingsProps {
+  onNavigate?: (page: PageType) => void;
+}
 
 interface CommonTemporaryItem {
   id: number;
@@ -30,7 +37,7 @@ interface CommonTemporaryItem {
   客出科目名: string;
 }
 
-const CommonTemporarySettings: React.FC = () => {
+const CommonTemporarySettings: React.FC<CommonTemporarySettingsProps> = ({ onNavigate }) => {
   // 初期データ（UIスクリーンショットに基づく13項目）
   const [items, setItems] = useState<CommonTemporaryItem[]>([
     { id: 1, 科目番号: 1, 科目名: '環境安全費', 表示: '表示', 客出科目名: '安全施設費' },
@@ -112,44 +119,55 @@ const CommonTemporarySettings: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* ページタイトルと保存ボタン */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      <Sidebar currentPage="common-temporary" onNavigate={onNavigate} />
+
+      <Box sx={{ flex: 1, p: 3 }}>
+        {/* ページタイトルと保存ボタン */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box
+              sx={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                bgcolor: '#007AFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: 2,
+              }}
+            >
+              <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
+            </Box>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: '#1D1D1F', fontSize: 28 }}>
+              共通仮設費科目設定
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            startIcon={<SaveIcon />}
+            onClick={handleSave}
             sx={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              bgcolor: '#0078C8',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mr: 2,
+              bgcolor: '#007AFF',
+              '&:hover': {
+                bgcolor: '#0051D5',
+              },
+              textTransform: 'none',
+              fontSize: '0.875rem',
+              borderRadius: '8px',
             }}
           >
-            <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 24 }} />
-          </Box>
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#1C2026' }}>
-            共通仮設費科目設定
-          </Typography>
+            保存
+          </Button>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<SaveIcon />}
-          onClick={handleSave}
-          sx={{
-            bgcolor: '#5DADE2',
-            '&:hover': {
-              bgcolor: '#3498DB',
-            },
-            textTransform: 'none',
-            fontSize: '0.875rem',
-          }}
-        >
-          保存
-        </Button>
-      </Box>
 
       {/* 説明文 */}
       <Box sx={{ mb: 3, p: 2, bgcolor: '#FFF9E6', borderRadius: 1, border: '1px solid #FFE082' }}>
@@ -161,12 +179,20 @@ const CommonTemporarySettings: React.FC = () => {
         </Typography>
       </Box>
 
-      {/* テーブル */}
-      <Paper sx={{ borderRadius: 1, overflow: 'hidden' }}>
-        <TableContainer>
+        {/* テーブル */}
+        <TableContainer
+          component={Paper}
+          sx={{
+            background: 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '16px',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            boxShadow: 'none',
+          }}
+        >
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#E8E8E8' }}>
+              <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                 <TableCell sx={{ fontWeight: 600, width: 60, fontSize: '0.875rem' }}>
                   科目<br />番号
                 </TableCell>
@@ -216,7 +242,7 @@ const CommonTemporarySettings: React.FC = () => {
                         >
                           <FormControlLabel
                             value="表示"
-                            control={<Radio size="small" />}
+                            control={<Radio size="small" sx={{ color: '#007AFF', '&.Mui-checked': { color: '#007AFF' } }} />}
                             label={<Typography sx={{ fontSize: '0.875rem' }}>表示</Typography>}
                           />
                           <FormControlLabel
@@ -237,12 +263,12 @@ const CommonTemporarySettings: React.FC = () => {
                       >
                         <FormControlLabel
                           value="表示"
-                          control={<Radio size="small" />}
+                          control={<Radio size="small" sx={{ color: '#007AFF', '&.Mui-checked': { color: '#007AFF' } }} />}
                           label={<Typography sx={{ fontSize: '0.875rem' }}>表示</Typography>}
                         />
                         <FormControlLabel
                           value="非表示"
-                          control={<Radio size="small" />}
+                          control={<Radio size="small" sx={{ color: '#007AFF', '&.Mui-checked': { color: '#007AFF' } }} />}
                           label={<Typography sx={{ fontSize: '0.875rem' }}>非表示</Typography>}
                         />
                       </RadioGroup>
@@ -266,30 +292,30 @@ const CommonTemporarySettings: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
-      </Paper>
 
-      {/* 注意事項 */}
-      <Box sx={{ mt: 2, p: 2, bgcolor: '#F5F5F5', borderRadius: 1 }}>
-        <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem', mb: 0.5 }}>
-          ・営出科目名を設定します。
-        </Typography>
-        <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem', mb: 0.5 }}>
-          ・見積書に出力される営出科目名（デフォルト）
-        </Typography>
-        <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem', mb: 0.5 }}>
-          ※見積積算修正画面で任意の営出科目名に変更可
-        </Typography>
-        <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem', mb: 0.5 }}>
-          ・科目番号を変更します。
-        </Typography>
-        <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem', mb: 0.5 }}>
-          ・ドラッグで並び順えをします。
-        </Typography>
-        <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem' }}>
-          ※見積積算、実行予算には反映されません
-        </Typography>
+        {/* 注意事項 */}
+        <Box sx={{ mt: 2, p: 2, bgcolor: '#F5F5F5', borderRadius: 1 }}>
+          <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem', mb: 0.5 }}>
+            ・営出科目名を設定します。
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem', mb: 0.5 }}>
+            ・見積書に出力される営出科目名（デフォルト）
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem', mb: 0.5 }}>
+            ※見積積算修正画面で任意の営出科目名に変更可
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem', mb: 0.5 }}>
+            ・科目番号を変更します。
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem', mb: 0.5 }}>
+            ・ドラッグで並び順えをします。
+          </Typography>
+          <Typography variant="body2" sx={{ color: '#666666', fontSize: '0.75rem' }}>
+            ※見積積算、実行予算には反映されません
+          </Typography>
+        </Box>
       </Box>
-    </Box>
+    </div>
   );
 };
 

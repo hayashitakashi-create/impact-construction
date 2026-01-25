@@ -29,6 +29,13 @@ import {
   Search as SearchIcon,
   Clear as ClearIcon,
 } from '@mui/icons-material';
+import Sidebar from '../components/Layout/Sidebar';
+
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface MaterialRegistrationProps {
+  onNavigate?: (page: PageType) => void;
+}
 
 interface Material {
   id: number;
@@ -36,7 +43,7 @@ interface Material {
   資材名: string;
 }
 
-const MaterialRegistration: React.FC = () => {
+const MaterialRegistration: React.FC<MaterialRegistrationProps> = ({ onNavigate }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -94,44 +101,23 @@ const MaterialRegistration: React.FC = () => {
   });
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* ページタイトルと新規登録ボタン */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              bgcolor: '#0078C8',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mr: 2,
-            }}
-          >
-            <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 24 }} />
+    <div style={{ display: "flex", minHeight: "100vh", background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      <Sidebar currentPage="material" onNavigate={onNavigate} />
+      <Box sx={{ flex: 1, p: 3 }}>
+        {/* ページタイトルと新規登録ボタン */}
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ bgcolor: '#007AFF', borderRadius: '50%', width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', mr: 2 }}>
+              <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
+            </Box>
+            <Typography variant="h5" sx={{ color: '#1D1D1F', fontWeight: 600 }}>
+              資材登録
+            </Typography>
           </Box>
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#1C2026' }}>
-            資材登録
-          </Typography>
+          <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenDialog()} sx={{ bgcolor: '#007AFF', color: '#FFFFFF', '&:hover': { bgcolor: '#0051D5' }, borderRadius: '8px' }}>
+            + 新規登録
+          </Button>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenDialog()}
-          sx={{
-            bgcolor: '#5DADE2',
-            '&:hover': {
-              bgcolor: '#3498DB',
-            },
-            textTransform: 'none',
-            fontSize: '0.875rem',
-          }}
-        >
-          + 新規登録
-        </Button>
-      </Box>
 
       {/* 検索条件 */}
       <Box sx={{ mb: 2 }}>
@@ -154,13 +140,13 @@ const MaterialRegistration: React.FC = () => {
           </Typography>
           <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
             {searchOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            <Typography variant="body2" sx={{ color: '#0078C8', ml: 0.5 }}>
+            <Typography variant="body2" sx={{ color: '#007AFF', ml: 0.5 }}>
               （{searchOpen ? '閉じる' : '開く'}）
             </Typography>
           </Box>
         </Box>
         <Collapse in={searchOpen}>
-          <Box sx={{ p: 2, bgcolor: '#FAFAFA', borderRadius: 1, mt: 1 }}>
+          <Box sx={{ p: 2, background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(10px)', borderRadius: '16px', border: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: 'none', mt: 1 }}>
             <Box sx={{ display: 'flex', gap: 2, mb: 2, alignItems: 'flex-end' }}>
               <TextField
                 label="資材名"
@@ -173,11 +159,12 @@ const MaterialRegistration: React.FC = () => {
                 variant="contained"
                 startIcon={<SearchIcon />}
                 sx={{
-                  bgcolor: '#5DADE2',
+                  bgcolor: '#007AFF',
                   '&:hover': {
-                    bgcolor: '#3498DB',
+                    bgcolor: '#0051D5',
                   },
                   textTransform: 'none',
+                  borderRadius: '8px',
                 }}
               >
                 検　索
@@ -187,12 +174,13 @@ const MaterialRegistration: React.FC = () => {
                 startIcon={<ClearIcon />}
                 sx={{
                   textTransform: 'none',
-                  borderColor: '#5DADE2',
-                  color: '#5DADE2',
+                  borderColor: '#007AFF',
+                  color: '#007AFF',
                   '&:hover': {
-                    borderColor: '#3498DB',
-                    bgcolor: 'rgba(93, 173, 226, 0.1)',
+                    borderColor: '#0051D5',
+                    bgcolor: 'rgba(0, 122, 255, 0.1)',
                   },
+                  borderRadius: '8px',
                 }}
                 onClick={() => {
                   setSearchKeyword('');
@@ -205,12 +193,12 @@ const MaterialRegistration: React.FC = () => {
         </Collapse>
       </Box>
 
-      {/* テーブル */}
-      <Paper sx={{ borderRadius: 1, overflow: 'hidden' }}>
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow sx={{ bgcolor: '#E8E8E8' }}>
+        {/* テーブル */}
+        <Paper sx={{ background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(10px)', borderRadius: '16px', border: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: 'none', overflow: 'hidden' }}>
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                 <TableCell sx={{ fontWeight: 600, width: 60, fontSize: '0.75rem' }}>修正</TableCell>
                 <TableCell sx={{ fontWeight: 600, width: 60, fontSize: '0.75rem' }}>削除</TableCell>
                 <TableCell sx={{ fontWeight: 600, width: 100, fontSize: '0.75rem' }}>規格番号</TableCell>
@@ -224,7 +212,7 @@ const MaterialRegistration: React.FC = () => {
                     <IconButton
                       size="small"
                       onClick={() => handleOpenDialog(material)}
-                      sx={{ color: '#0078C8' }}
+                      sx={{ color: '#007AFF' }}
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
@@ -233,7 +221,7 @@ const MaterialRegistration: React.FC = () => {
                     <IconButton
                       size="small"
                       onClick={() => handleDelete(material.id)}
-                      sx={{ color: '#5DADE2' }}
+                      sx={{ color: '#007AFF' }}
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>
@@ -242,95 +230,98 @@ const MaterialRegistration: React.FC = () => {
                   <TableCell sx={{ fontSize: '0.875rem' }}>{material.資材名}</TableCell>
                 </TableRow>
               ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
 
-      {/* 新規登録/編集ダイアログ */}
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {editingMaterial ? '編集' : '新規登録'}
-          </Typography>
-          <IconButton onClick={handleCloseDialog} size="small">
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent dividers>
-          <Typography variant="body2" sx={{ mb: 3, color: '#666666' }}>
-            項目を入力し、よろしければ『登録』を押してください。
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* 科目番号 */}
-            <Box>
-              <TextField
-                label="科目番号"
-                value={formData.科目番号}
-                onChange={(e) => setFormData({ ...formData, 科目番号: e.target.value })}
-                fullWidth
-                size="small"
-              />
-              {!formData.科目番号 && (
-                <Typography variant="caption" sx={{ color: '#D32F2F', mt: 0.5, display: 'block' }}>
-                  必須です
-                </Typography>
-              )}
-            </Box>
+        {/* 新規登録/編集ダイアログ */}
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              {editingMaterial ? '編集' : '新規登録'}
+            </Typography>
+            <IconButton onClick={handleCloseDialog} size="small">
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent dividers>
+            <Typography variant="body2" sx={{ mb: 3, color: '#666666' }}>
+              項目を入力し、よろしければ『登録』を押してください。
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {/* 科目番号 */}
+              <Box>
+                <TextField
+                  label="科目番号"
+                  value={formData.科目番号}
+                  onChange={(e) => setFormData({ ...formData, 科目番号: e.target.value })}
+                  fullWidth
+                  size="small"
+                />
+                {!formData.科目番号 && (
+                  <Typography variant="caption" sx={{ color: '#D32F2F', mt: 0.5, display: 'block' }}>
+                    必須です
+                  </Typography>
+                )}
+              </Box>
 
-            {/* 資材名 */}
-            <Box>
-              <TextField
-                label="資材名"
-                value={formData.資材名}
-                onChange={(e) => setFormData({ ...formData, 資材名: e.target.value })}
-                fullWidth
-                size="small"
-              />
-              {!formData.資材名 && (
-                <Typography variant="caption" sx={{ color: '#D32F2F', mt: 0.5, display: 'block' }}>
-                  必須です
-                </Typography>
-              )}
+              {/* 資材名 */}
+              <Box>
+                <TextField
+                  label="資材名"
+                  value={formData.資材名}
+                  onChange={(e) => setFormData({ ...formData, 資材名: e.target.value })}
+                  fullWidth
+                  size="small"
+                />
+                {!formData.資材名 && (
+                  <Typography variant="caption" sx={{ color: '#D32F2F', mt: 0.5, display: 'block' }}>
+                    必須です
+                  </Typography>
+                )}
+              </Box>
             </Box>
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ p: 2 }}>
-          <Button
-            onClick={handleCloseDialog}
-            variant="contained"
-            sx={{
-              bgcolor: '#5DADE2',
-              '&:hover': {
-                bgcolor: '#3498DB',
-              },
-              textTransform: 'none',
-            }}
-          >
-            キャンセル
-          </Button>
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            sx={{
-              bgcolor: '#D3E8F5',
-              color: '#666666',
-              '&:hover': {
-                bgcolor: '#B8D9ED',
-              },
-              textTransform: 'none',
-            }}
-          >
-            登録
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+          </DialogContent>
+          <DialogActions sx={{ p: 2 }}>
+            <Button
+              onClick={handleCloseDialog}
+              variant="contained"
+              sx={{
+                bgcolor: '#007AFF',
+                '&:hover': {
+                  bgcolor: '#0051D5',
+                },
+                textTransform: 'none',
+                borderRadius: '8px',
+              }}
+            >
+              キャンセル
+            </Button>
+            <Button
+              onClick={handleSave}
+              variant="contained"
+              sx={{
+                bgcolor: '#007AFF',
+                color: '#FFFFFF',
+                '&:hover': {
+                  bgcolor: '#0051D5',
+                },
+                textTransform: 'none',
+                borderRadius: '8px',
+              }}
+            >
+              登録
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    </div>
   );
 };
 

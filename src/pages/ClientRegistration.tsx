@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Container,
+  Paper,
   Typography,
   Button,
   Table,
@@ -33,8 +33,15 @@ import {
   Close as CloseIcon,
 } from '@mui/icons-material';
 import { useRegistration, Client } from '../contexts/RegistrationContext';
+import Sidebar from '../components/Layout/Sidebar';
 
-const ClientRegistration: React.FC = () => {
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface ClientRegistrationProps {
+  onNavigate?: (page: PageType) => void;
+}
+
+const ClientRegistration: React.FC<ClientRegistrationProps> = ({ onNavigate }) => {
   const { clients, setClients } = useRegistration();
 
   const [searchExpanded, setSearchExpanded] = useState(false);
@@ -143,14 +150,23 @@ const ClientRegistration: React.FC = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: '#F6F6F6', minHeight: 'calc(100vh - 56px)', py: 3 }}>
-      <Container maxWidth="xl">
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      <Sidebar currentPage="client" onNavigate={onNavigate} />
+
+      <Box sx={{ flex: 1, p: 3 }}>
         {/* ヘッダー */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box
               sx={{
-                bgcolor: '#0078C8',
+                bgcolor: '#007AFF',
                 borderRadius: '50%',
                 width: 48,
                 height: 48,
@@ -162,7 +178,7 @@ const ClientRegistration: React.FC = () => {
             >
               <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
             </Box>
-            <Typography variant="h4" sx={{ color: '#1C2026', fontWeight: 600 }}>
+            <Typography variant="h5" sx={{ color: '#1D1D1F', fontWeight: 600 }}>
               発注者登録
             </Typography>
           </Box>
@@ -172,9 +188,10 @@ const ClientRegistration: React.FC = () => {
             startIcon={<AddIcon />}
             onClick={handleOpenDialog}
             sx={{
-              bgcolor: '#42A5F5',
+              bgcolor: '#007AFF',
               color: '#FFFFFF',
-              '&:hover': { bgcolor: '#1E88E5' },
+              '&:hover': { bgcolor: '#0051D5' },
+              borderRadius: '8px',
             }}
           >
             新規登録
@@ -185,7 +202,14 @@ const ClientRegistration: React.FC = () => {
         <Accordion
           expanded={searchExpanded}
           onChange={() => setSearchExpanded(!searchExpanded)}
-          sx={{ mb: 2, bgcolor: '#E0E0E0' }}
+          sx={{
+            mb: 2,
+            background: 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '16px',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            boxShadow: 'none',
+          }}
         >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography sx={{ fontWeight: 600 }}>
@@ -201,10 +225,19 @@ const ClientRegistration: React.FC = () => {
         </Accordion>
 
         {/* テーブル */}
-        <TableContainer sx={{ bgcolor: '#FFFFFF' }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            background: 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '16px',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            boxShadow: 'none',
+          }}
+        >
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#B0BEC5' }}>
+              <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                 <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 80 }}>修正</TableCell>
                 <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 80 }}>削除</TableCell>
                 <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>発注者(法人名)</TableCell>
@@ -223,7 +256,7 @@ const ClientRegistration: React.FC = () => {
                   <TableCell>
                     <IconButton
                       onClick={() => handleEditClient(client)}
-                      sx={{ color: '#42A5F5' }}
+                      sx={{ color: '#007AFF' }}
                     >
                       <EditIcon />
                     </IconButton>
@@ -231,7 +264,7 @@ const ClientRegistration: React.FC = () => {
                   <TableCell>
                     <IconButton
                       onClick={() => handleDeleteClient(client.id)}
-                      sx={{ color: '#42A5F5' }}
+                      sx={{ color: '#007AFF' }}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -357,9 +390,10 @@ const ClientRegistration: React.FC = () => {
             <Button
               onClick={handleCloseDialog}
               sx={{
-                bgcolor: '#42A5F5',
+                bgcolor: '#007AFF',
                 color: '#FFFFFF',
-                '&:hover': { bgcolor: '#1E88E5' },
+                '&:hover': { bgcolor: '#0051D5' },
+                borderRadius: '8px',
               }}
             >
               キャンセル
@@ -368,17 +402,18 @@ const ClientRegistration: React.FC = () => {
               onClick={handleSaveClient}
               variant="contained"
               sx={{
-                bgcolor: '#42A5F5',
+                bgcolor: '#007AFF',
                 color: '#FFFFFF',
-                '&:hover': { bgcolor: '#1E88E5' },
+                '&:hover': { bgcolor: '#0051D5' },
+                borderRadius: '8px',
               }}
             >
               登録
             </Button>
           </DialogActions>
         </Dialog>
-      </Container>
-    </Box>
+      </Box>
+    </div>
   );
 };
 

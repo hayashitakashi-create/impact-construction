@@ -18,6 +18,13 @@ import {
   Add as AddIcon,
 } from '@mui/icons-material';
 import { useRegistration } from '../contexts/RegistrationContext';
+import Sidebar from '../components/Layout/Sidebar';
+
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface CompanyRegistrationProps {
+  onNavigate?: (page: PageType) => void;
+}
 
 const FormRow = ({ label, children, alignStart = false }: { label: string; children: React.ReactNode; alignStart?: boolean }) => (
   <Box sx={{ display: 'flex', alignItems: alignStart ? 'flex-start' : 'center', mb: 2 }}>
@@ -26,7 +33,7 @@ const FormRow = ({ label, children, alignStart = false }: { label: string; child
   </Box>
 );
 
-const CompanyRegistration: React.FC = () => {
+const CompanyRegistration: React.FC<CompanyRegistrationProps> = ({ onNavigate }) => {
   const { companyCode, setCompanyCode } = useRegistration();
 
   const [selectedOffice, setSelectedOffice] = useState('本社');
@@ -101,27 +108,36 @@ const CompanyRegistration: React.FC = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: '#F6F6F6', minHeight: 'calc(100vh - 56px)', py: 3 }}>
-      <Container maxWidth="lg">
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box sx={{ bgcolor: '#0078C8', borderRadius: '50%', width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
+    <div style={{ display: "flex", minHeight: "100vh", background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      <Sidebar currentPage="company" onNavigate={onNavigate} />
+      <Box sx={{ flex: 1, p: 3 }}>
+        <Container maxWidth="lg">
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ bgcolor: '#007AFF', borderRadius: '50%', width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
+              </Box>
+              <Typography variant="h5" sx={{ color: '#1C2026', fontWeight: 600 }}>会社登録情報設定</Typography>
             </Box>
-            <Typography variant="h5" sx={{ color: '#1C2026', fontWeight: 600 }}>会社登録情報設定</Typography>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <FormControl sx={{ minWidth: 200, bgcolor: '#FFFFFF' }} size="small">
+                <Select value={selectedOffice} onChange={(e) => setSelectedOffice(e.target.value)}>
+                  <MenuItem value="本社">本社</MenuItem>
+                </Select>
+              </FormControl>
+              <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSave} sx={{ bgcolor: '#007AFF', color: '#FFFFFF', '&:hover': { bgcolor: '#0051D5' }, borderRadius: '8px' }}>保存</Button>
+              <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddBranch} sx={{ bgcolor: '#007AFF', color: '#FFFFFF', '&:hover': { bgcolor: '#0051D5' }, borderRadius: '8px' }}>支店追加</Button>
+            </Box>
           </Box>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <FormControl sx={{ minWidth: 200, bgcolor: '#FFFFFF' }} size="small">
-              <Select value={selectedOffice} onChange={(e) => setSelectedOffice(e.target.value)}>
-                <MenuItem value="本社">本社</MenuItem>
-              </Select>
-            </FormControl>
-            <Button variant="contained" startIcon={<SaveIcon />} onClick={handleSave} sx={{ bgcolor: '#42A5F5', color: '#FFFFFF', '&:hover': { bgcolor: '#1E88E5' } }}>保存</Button>
-            <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddBranch} sx={{ bgcolor: '#42A5F5', color: '#FFFFFF', '&:hover': { bgcolor: '#1E88E5' } }}>支店追加</Button>
-          </Box>
-        </Box>
 
-        <Box sx={{ bgcolor: '#FFFFFF', p: 4, borderRadius: 2 }}>
+          <Box sx={{
+            bgcolor: 'rgba(255, 255, 255, 0.9)',
+            p: 4,
+            borderRadius: 2,
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+            border: '1px solid rgba(255, 255, 255, 0.2)'
+          }}>
           <FormRow label="会社名">
             <TextField fullWidth value={companyName} onChange={(e) => setCompanyName(e.target.value)} size="small" />
           </FormRow>
@@ -438,9 +454,10 @@ const CompanyRegistration: React.FC = () => {
               <Typography>月</Typography>
             </Box>
           </FormRow>
-        </Box>
-      </Container>
-    </Box>
+          </Box>
+        </Container>
+      </Box>
+    </div>
   );
 };
 

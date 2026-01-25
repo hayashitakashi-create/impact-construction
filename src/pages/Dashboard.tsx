@@ -185,7 +185,7 @@ const sidebarItems = [
   { icon: TrendingUp, label: "出来高管理", active: false, page: null },
   { icon: Wallet, label: "支払管理", active: false, page: null },
   { icon: Layers, label: "実行予算費目", active: false, page: null },
-  { icon: Settings, label: "その他・設定", active: false, page: 'accounting-integration' as PageType },
+  { icon: Settings, label: "その他・設定", active: false, page: 'user' as PageType },
 ];
 
 const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
@@ -395,8 +395,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* サマリーカード */}
-        <div
+        {/* サマリーカード - 一旦非表示 */}
+        {/* <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
@@ -445,7 +445,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
               <div style={{ fontSize: "14px", color: "#007AFF" }}>実績 {card.actual}</div>
             </motion.div>
           ))}
-        </div>
+        </div> */}
 
         {/* プロジェクトカード */}
         <div

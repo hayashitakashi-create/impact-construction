@@ -39,11 +39,15 @@ import {
   NavigateNext as NavigateNextIcon,
 } from '@mui/icons-material';
 import { useRegistration, Client } from '../contexts/RegistrationContext';
+import Sidebar from '../components/Layout/Sidebar';
+
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
 
 interface ConstructionRegistrationProps {
   constructionId?: number | null;
   editMode?: boolean;
   onSave?: () => void;
+  onNavigate?: (page: PageType) => void;
 }
 
 // テキストファイルプレビューコンポーネント
@@ -70,7 +74,7 @@ const TextFilePreview: React.FC<{ file: File }> = ({ file }) => {
   );
 };
 
-const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ constructionId, editMode = false, onSave }) => {
+const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ constructionId, editMode = false, onSave, onNavigate }) => {
   const { categories, buildingUsages, clients, users, constructions, setConstructions } = useRegistration();
   const [orderStatus, setOrderStatus] = useState('見積中');
   const [constructionCategory, setConstructionCategory] = useState('');
@@ -482,13 +486,14 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
   };
 
   return (
-    <Box sx={{ bgcolor: '#F6F6F6', minHeight: 'calc(100vh - 56px)', py: 3 }}>
-      <Container maxWidth="lg">
+    <div style={{ display: "flex", minHeight: "100vh", background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      <Sidebar currentPage="construction-registration" onNavigate={onNavigate} />
+      <Box sx={{ flex: 1, p: 3, maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
         {/* ヘッダー */}
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
           <Box
             sx={{
-              bgcolor: '#0078C8',
+              bgcolor: '#007AFF',
               borderRadius: '50%',
               width: 48,
               height: 48,
@@ -500,12 +505,19 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
           >
             <ConstructionIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
           </Box>
-          <Typography variant="h4" sx={{ color: '#1C2026', fontWeight: 600 }}>
+          <Typography variant="h5" sx={{ color: '#1D1D1F', fontWeight: 600, fontSize: '28px' }}>
             {editMode ? '工事編集' : '工事登録'}
           </Typography>
         </Box>
 
-        <Paper sx={{ p: 4 }}>
+        <Paper sx={{
+          p: 4,
+          background: 'rgba(255, 255, 255, 0.7)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '16px',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          boxShadow: 'none',
+        }}>
           {/* エラーメッセージとボタン */}
           <Box
             sx={{
@@ -527,9 +539,10 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
               onClick={handleSave}
               disabled={!isFormValid}
               sx={{
-                bgcolor: isFormValid ? '#42A5F5' : '#B0BEC5',
+                bgcolor: isFormValid ? '#007AFF' : '#B0BEC5',
                 color: '#FFFFFF',
-                '&:hover': { bgcolor: isFormValid ? '#1E88E5' : '#90A4AE' },
+                borderRadius: '8px',
+                '&:hover': { bgcolor: isFormValid ? '#0051D5' : '#90A4AE' },
                 '&:disabled': {
                   bgcolor: '#B0BEC5',
                   color: '#FFFFFF',
@@ -556,24 +569,24 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
               >
                 <FormControlLabel
                   value="見積中"
-                  control={<Radio sx={{ color: '#0078C8', '&.Mui-checked': { color: '#0078C8' } }} />}
+                  control={<Radio sx={{ color: '#007AFF', '&.Mui-checked': { color: '#007AFF' } }} />}
                   label="見積中"
                 />
                 {editMode && (
                   <>
                     <FormControlLabel
                       value="受注"
-                      control={<Radio sx={{ color: '#0078C8', '&.Mui-checked': { color: '#0078C8' } }} />}
+                      control={<Radio sx={{ color: '#007AFF', '&.Mui-checked': { color: '#007AFF' } }} />}
                       label="受注"
                     />
                     <FormControlLabel
                       value="失注"
-                      control={<Radio sx={{ color: '#0078C8', '&.Mui-checked': { color: '#0078C8' } }} />}
+                      control={<Radio sx={{ color: '#007AFF', '&.Mui-checked': { color: '#007AFF' } }} />}
                       label="失注"
                     />
                     <FormControlLabel
                       value="中止"
-                      control={<Radio sx={{ color: '#0078C8', '&.Mui-checked': { color: '#0078C8' } }} />}
+                      control={<Radio sx={{ color: '#007AFF', '&.Mui-checked': { color: '#007AFF' } }} />}
                       label="中止"
                     />
                   </>
@@ -685,6 +698,7 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
                     color: '#FFFFFF',
                     minWidth: 100,
                     height: 56,
+                    borderRadius: '8px',
                     '&:hover': { bgcolor: '#616161' },
                   }}
                 >
@@ -860,19 +874,27 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
                     onClick={handleAddPaymentRow}
                     size="small"
                     sx={{
-                      borderColor: '#0078C8',
-                      color: '#0078C8',
-                      '&:hover': { borderColor: '#005A9C', bgcolor: '#F5F5F5' },
+                      borderColor: '#007AFF',
+                      color: '#007AFF',
+                      borderRadius: '8px',
+                      '&:hover': { borderColor: '#0051D5', bgcolor: '#F5F5F5' },
                     }}
                   >
                     行追加
                   </Button>
                 </Box>
 
-                <TableContainer component={Paper} sx={{ mb: 2 }}>
+                <TableContainer component={Paper} sx={{
+                  mb: 2,
+                  background: 'rgba(255, 255, 255, 0.7)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: '16px',
+                  border: '1px solid rgba(0, 0, 0, 0.08)',
+                  boxShadow: 'none',
+                }}>
                   <Table size="small">
                     <TableHead>
-                      <TableRow sx={{ bgcolor: '#B0BEC5' }}>
+                      <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                         <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 60 }}>削除</TableCell>
                         <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>メモ</TableCell>
                         <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>期限</TableCell>
@@ -928,7 +950,7 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
 
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 1 }}>
                   <Typography sx={{ fontWeight: 600 }}>合計金額</Typography>
-                  <Typography sx={{ fontSize: '1.25rem', fontWeight: 600, color: '#0078C8' }}>
+                  <Typography sx={{ fontSize: '1.25rem', fontWeight: 600, color: '#007AFF' }}>
                     {paymentTotalAmount}円
                   </Typography>
                 </Box>
@@ -1064,7 +1086,7 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
                   sx={{
-                    border: `2px dashed ${isDragging ? '#0078C8' : '#B0BEC5'}`,
+                    border: `2px dashed ${isDragging ? '#007AFF' : '#B0BEC5'}`,
                     borderRadius: 1,
                     p: 4,
                     textAlign: 'center',
@@ -1130,7 +1152,7 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
                             <IconButton
                               size="small"
                               onClick={() => handleFilePreview(index)}
-                              sx={{ color: '#42A5F5' }}
+                              sx={{ color: '#007AFF' }}
                             >
                               <VisibilityIcon fontSize="small" />
                             </IconButton>
@@ -1169,7 +1191,7 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
             <TableContainer>
               <Table>
                 <TableHead>
-                  <TableRow sx={{ bgcolor: '#B0BEC5' }}>
+                  <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                     <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 100 }}>選択</TableCell>
                     <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>発注者名</TableCell>
                     <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>住所</TableCell>
@@ -1191,9 +1213,10 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
                           size="small"
                           onClick={() => handleSelectClient(client)}
                           sx={{
-                            bgcolor: '#42A5F5',
+                            bgcolor: '#007AFF',
                             color: '#FFFFFF',
-                            '&:hover': { bgcolor: '#1E88E5' },
+                            borderRadius: '8px',
+                            '&:hover': { bgcolor: '#0051D5' },
                           }}
                         >
                           選択
@@ -1220,6 +1243,7 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
               sx={{
                 bgcolor: '#B0BEC5',
                 color: '#FFFFFF',
+                borderRadius: '8px',
                 '&:hover': { bgcolor: '#90A4AE' },
               }}
             >
@@ -1272,6 +1296,7 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
               sx={{
                 bgcolor: '#B0BEC5',
                 color: '#FFFFFF',
+                borderRadius: '8px',
                 '&:hover': { bgcolor: '#90A4AE' },
               }}
             >
@@ -1281,9 +1306,10 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
               onClick={() => setOpenTaxDialog(false)}
               variant="contained"
               sx={{
-                bgcolor: '#42A5F5',
+                bgcolor: '#007AFF',
                 color: '#FFFFFF',
-                '&:hover': { bgcolor: '#1E88E5' },
+                borderRadius: '8px',
+                '&:hover': { bgcolor: '#0051D5' },
               }}
             >
               設定
@@ -1320,7 +1346,7 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
                 onClick={handlePreviousFile}
                 disabled={previewIndex === 0}
                 size="small"
-                sx={{ color: previewIndex === 0 ? '#B0BEC5' : '#42A5F5' }}
+                sx={{ color: previewIndex === 0 ? '#B0BEC5' : '#007AFF' }}
               >
                 <NavigateBeforeIcon />
               </IconButton>
@@ -1328,7 +1354,7 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
                 onClick={handleNextFile}
                 disabled={previewIndex === uploadedFiles.length - 1}
                 size="small"
-                sx={{ color: previewIndex === uploadedFiles.length - 1 ? '#B0BEC5' : '#42A5F5' }}
+                sx={{ color: previewIndex === uploadedFiles.length - 1 ? '#B0BEC5' : '#007AFF' }}
               >
                 <NavigateNextIcon />
               </IconButton>
@@ -1406,9 +1432,10 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
                                 link.click();
                               }}
                               sx={{
-                                bgcolor: '#42A5F5',
+                                bgcolor: '#007AFF',
                                 color: '#FFFFFF',
-                                '&:hover': { bgcolor: '#1E88E5' },
+                                borderRadius: '8px',
+                                '&:hover': { bgcolor: '#0051D5' },
                               }}
                             >
                               ダウンロード
@@ -1422,8 +1449,8 @@ const ConstructionRegistration: React.FC<ConstructionRegistrationProps> = ({ con
             )}
           </DialogContent>
         </Dialog>
-      </Container>
-    </Box>
+      </Box>
+    </div>
   );
 };
 

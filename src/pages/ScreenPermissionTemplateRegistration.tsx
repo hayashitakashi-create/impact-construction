@@ -32,6 +32,13 @@ import {
   Search as SearchIcon,
   Clear as ClearIcon,
 } from '@mui/icons-material';
+import Sidebar from '../components/Layout/Sidebar';
+
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface ScreenPermissionTemplateRegistrationProps {
+  onNavigate?: (page: PageType) => void;
+}
 
 interface PermissionDetails {
   工事: string[];
@@ -51,7 +58,7 @@ interface PermissionTemplate {
   permissions: PermissionDetails;
 }
 
-const ScreenPermissionTemplateRegistration: React.FC = () => {
+const ScreenPermissionTemplateRegistration: React.FC<ScreenPermissionTemplateRegistrationProps> = ({ onNavigate }) => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
@@ -269,25 +276,27 @@ const ScreenPermissionTemplateRegistration: React.FC = () => {
   const open = Boolean(anchorEl);
 
   return (
-    <Box sx={{ p: 3 }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      <Sidebar currentPage="screen-permission-template" onNavigate={onNavigate} />
+      <Box sx={{ flex: 1, p: 3 }}>
       {/* ページタイトルとボタン */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Box
             sx={{
-              width: 40,
-              height: 40,
+              width: 48,
+              height: 48,
               borderRadius: '50%',
-              bgcolor: '#0078C8',
+              bgcolor: '#007AFF',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               mr: 2,
             }}
           >
-            <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 24 }} />
+            <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
           </Box>
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#1C2026' }}>
+          <Typography variant="h5" sx={{ fontWeight: 600, color: '#1D1D1F', fontSize: 28 }}>
             画面操作権限テンプレート登録
           </Typography>
         </Box>
@@ -297,12 +306,13 @@ const ScreenPermissionTemplateRegistration: React.FC = () => {
             startIcon={<SaveIcon />}
             onClick={handleSave}
             sx={{
-              bgcolor: '#5DADE2',
+              bgcolor: '#007AFF',
               '&:hover': {
-                bgcolor: '#3498DB',
+                bgcolor: '#0051D5',
               },
               textTransform: 'none',
               fontSize: '0.875rem',
+              borderRadius: '8px',
             }}
           >
             保存
@@ -312,12 +322,13 @@ const ScreenPermissionTemplateRegistration: React.FC = () => {
             startIcon={<AddIcon />}
             onClick={handleOpenDialog}
             sx={{
-              bgcolor: '#5DADE2',
+              bgcolor: '#007AFF',
               '&:hover': {
-                bgcolor: '#3498DB',
+                bgcolor: '#0051D5',
               },
               textTransform: 'none',
               fontSize: '0.875rem',
+              borderRadius: '8px',
             }}
           >
             + 新規追加
@@ -346,13 +357,13 @@ const ScreenPermissionTemplateRegistration: React.FC = () => {
           </Typography>
           <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
             {searchOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            <Typography variant="body2" sx={{ color: '#0078C8', ml: 0.5 }}>
+            <Typography variant="body2" sx={{ color: '#007AFF', ml: 0.5 }}>
               （{searchOpen ? '閉じる' : '開く'}）
             </Typography>
           </Box>
         </Box>
         <Collapse in={searchOpen}>
-          <Box sx={{ p: 2, bgcolor: '#FAFAFA', borderRadius: 1, mt: 1 }}>
+          <Box sx={{ p: 2, background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(10px)', borderRadius: '16px', border: '1px solid rgba(0, 0, 0, 0.08)', boxShadow: 'none', mt: 1 }}>
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-end' }}>
               <TextField
                 label="テンプレート名"
@@ -366,11 +377,12 @@ const ScreenPermissionTemplateRegistration: React.FC = () => {
                 variant="contained"
                 startIcon={<SearchIcon />}
                 sx={{
-                  bgcolor: '#5DADE2',
+                  bgcolor: '#007AFF',
                   '&:hover': {
-                    bgcolor: '#3498DB',
+                    bgcolor: '#0051D5',
                   },
                   textTransform: 'none',
+                  borderRadius: '8px',
                 }}
               >
                 検索
@@ -381,12 +393,13 @@ const ScreenPermissionTemplateRegistration: React.FC = () => {
                 onClick={() => setSearchKeyword('')}
                 sx={{
                   textTransform: 'none',
-                  borderColor: '#5DADE2',
-                  color: '#5DADE2',
+                  borderColor: '#007AFF',
+                  color: '#007AFF',
                   '&:hover': {
-                    borderColor: '#3498DB',
-                    bgcolor: 'rgba(93, 173, 226, 0.1)',
+                    borderColor: '#0051D5',
+                    bgcolor: 'rgba(0, 122, 255, 0.1)',
                   },
+                  borderRadius: '8px',
                 }}
               >
                 クリア
@@ -397,24 +410,30 @@ const ScreenPermissionTemplateRegistration: React.FC = () => {
       </Box>
 
       {/* テンプレートテーブル */}
-      <Paper sx={{ borderRadius: 1, overflow: 'hidden' }}>
+      <Paper sx={{
+        borderRadius: '16px',
+        overflow: 'hidden',
+        background: 'rgba(255, 255, 255, 0.7)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(0, 0, 0, 0.08)',
+        boxShadow: 'none',
+      }}>
         <TableContainer>
           <Table size="small">
             <TableHead>
-              <TableRow sx={{ bgcolor: '#9E9E9E' }}>
+              <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                 <TableCell padding="checkbox" sx={{ width: 50 }}>
                   <Checkbox
                     checked={selectedTemplates.length === filteredTemplates.length && filteredTemplates.length > 0}
                     indeterminate={selectedTemplates.length > 0 && selectedTemplates.length < filteredTemplates.length}
                     onChange={handleSelectAll}
                     size="small"
-                    sx={{ color: '#FFFFFF', '&.Mui-checked': { color: '#FFFFFF' } }}
                   />
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '0.875rem', color: '#FFFFFF', width: 200 }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.875rem', width: 200 }}>
                   テンプレート名
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '0.875rem', color: '#FFFFFF' }}>
+                <TableCell sx={{ fontWeight: 600, fontSize: '0.875rem' }}>
                   詳細
                 </TableCell>
               </TableRow>
@@ -445,9 +464,9 @@ const ScreenPermissionTemplateRegistration: React.FC = () => {
                             textTransform: 'none',
                             minWidth: 'auto',
                             p: 0.5,
-                            color: template.permissions[category].length > 0 ? '#0078C8' : '#666666',
+                            color: template.permissions[category].length > 0 ? '#007AFF' : '#666666',
                             '&:hover': {
-                              bgcolor: 'rgba(0, 120, 200, 0.1)',
+                              bgcolor: 'rgba(0, 122, 255, 0.1)',
                             },
                           }}
                         >
@@ -556,11 +575,12 @@ const ScreenPermissionTemplateRegistration: React.FC = () => {
             onClick={handleCloseDialog}
             variant="contained"
             sx={{
-              bgcolor: '#5DADE2',
+              bgcolor: '#007AFF',
               '&:hover': {
-                bgcolor: '#3498DB',
+                bgcolor: '#0051D5',
               },
               textTransform: 'none',
+              borderRadius: '8px',
             }}
           >
             キャンセル
@@ -580,13 +600,15 @@ const ScreenPermissionTemplateRegistration: React.FC = () => {
                 color: '#999999',
               },
               textTransform: 'none',
+              borderRadius: '8px',
             }}
           >
             登録
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+      </Box>
+    </div>
   );
 };
 

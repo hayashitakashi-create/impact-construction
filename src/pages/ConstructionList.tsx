@@ -35,14 +35,18 @@ import {
 } from '@mui/icons-material';
 import { useRegistration } from '../contexts/RegistrationContext';
 import * as XLSX from 'xlsx';
+import Sidebar from '../components/Layout/Sidebar';
+
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
 
 interface ConstructionListProps {
   onViewDetail?: (id: number) => void;
   onEdit?: (id: number) => void;
   onNew?: () => void;
+  onNavigate?: (page: PageType) => void;
 }
 
-const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdit, onNew }) => {
+const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdit, onNew, onNavigate }) => {
   const { constructions, clients, setConstructions } = useRegistration();
   const [searchExpanded, setSearchExpanded] = useState(false);
 
@@ -333,14 +337,16 @@ const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdi
   };
 
   return (
-    <Box sx={{ bgcolor: '#F6F6F6', minHeight: 'calc(100vh - 56px)', py: 3 }}>
-      <Container maxWidth="xl">
+    <div style={{ display: "flex", minHeight: "100vh", background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+      <Sidebar currentPage="construction-list" onNavigate={onNavigate} />
+      <Box sx={{ flex: 1, p: 3 }}>
+        <Container maxWidth="xl" sx={{ px: 0 }}>
         {/* ヘッダー */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box
               sx={{
-                bgcolor: '#0078C8',
+                bgcolor: '#007AFF',
                 borderRadius: '50%',
                 width: 48,
                 height: 48,
@@ -352,7 +358,7 @@ const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdi
             >
               <ConstructionIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
             </Box>
-            <Typography variant="h4" sx={{ color: '#1C2026', fontWeight: 600 }}>
+            <Typography variant="h5" sx={{ color: '#1D1D1F', fontWeight: 600 }}>
               工事一覧
             </Typography>
           </Box>
@@ -362,9 +368,10 @@ const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdi
             startIcon={<AddIcon />}
             onClick={handleNewConstruction}
             sx={{
-              bgcolor: '#42A5F5',
+              bgcolor: '#007AFF',
               color: '#FFFFFF',
-              '&:hover': { bgcolor: '#1E88E5' },
+              '&:hover': { bgcolor: '#0051D5' },
+              borderRadius: '8px',
             }}
           >
             新規登録
@@ -375,14 +382,22 @@ const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdi
         <Accordion
           expanded={searchExpanded}
           onChange={() => setSearchExpanded(!searchExpanded)}
-          sx={{ mb: 2, bgcolor: '#E0E0E0' }}
+          sx={{
+            mb: 2,
+            background: 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '16px',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            boxShadow: 'none',
+            '&:before': { display: 'none' }
+          }}
         >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography sx={{ fontWeight: 600 }}>
               検索条件 ({searchExpanded ? '閉じる' : '開く'})
             </Typography>
           </AccordionSummary>
-          <AccordionDetails sx={{ bgcolor: '#FFFFFF' }}>
+          <AccordionDetails sx={{ bgcolor: 'transparent' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
               {/* 1行目: 工事番号、工事名 */}
               <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
@@ -662,23 +677,25 @@ const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdi
                   startIcon={<SearchIcon />}
                   onClick={handleSearch}
                   sx={{
-                    bgcolor: '#42A5F5',
+                    bgcolor: '#007AFF',
                     color: '#FFFFFF',
                     minWidth: 120,
-                    '&:hover': { bgcolor: '#1E88E5' },
+                    '&:hover': { bgcolor: '#0051D5' },
+                    borderRadius: '8px',
                   }}
                 >
                   検 索
                 </Button>
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   startIcon={<ClearIcon />}
                   onClick={handleClear}
                   sx={{
-                    bgcolor: '#42A5F5',
-                    color: '#FFFFFF',
+                    borderColor: '#007AFF',
+                    color: '#007AFF',
                     minWidth: 120,
-                    '&:hover': { bgcolor: '#1E88E5' },
+                    '&:hover': { borderColor: '#0051D5', bgcolor: 'rgba(0, 122, 255, 0.1)' },
+                    borderRadius: '8px',
                   }}
                 >
                   クリア
@@ -711,10 +728,16 @@ const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdi
         </Box>
 
         {/* テーブル */}
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{
+          background: 'rgba(255, 255, 255, 0.7)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '16px',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          boxShadow: 'none',
+        }}>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#B0BEC5' }}>
+              <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                 <TableCell sx={{ color: '#1C2026', fontWeight: 600, minWidth: 120 }}>
                   工事番号
                 </TableCell>
@@ -794,7 +817,7 @@ const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdi
                       <IconButton
                         size="small"
                         onClick={() => handleDetail(construction.id)}
-                        sx={{ color: '#42A5F5' }}
+                        sx={{ color: '#007AFF' }}
                       >
                         <MenuBookIcon fontSize="small" />
                       </IconButton>
@@ -803,7 +826,7 @@ const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdi
                       <IconButton
                         size="small"
                         onClick={() => handleEdit(construction.id)}
-                        sx={{ color: '#42A5F5' }}
+                        sx={{ color: '#007AFF' }}
                       >
                         <EditIcon fontSize="small" />
                       </IconButton>
@@ -812,7 +835,7 @@ const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdi
                       <IconButton
                         size="small"
                         onClick={() => handleDelete(construction.id)}
-                        sx={{ color: '#42A5F5' }}
+                        sx={{ color: '#007AFF' }}
                       >
                         <DeleteIcon fontSize="small" />
                       </IconButton>
@@ -823,8 +846,9 @@ const ConstructionList: React.FC<ConstructionListProps> = ({ onViewDetail, onEdi
             </TableBody>
           </Table>
         </TableContainer>
-      </Container>
-    </Box>
+        </Container>
+      </Box>
+    </div>
   );
 };
 

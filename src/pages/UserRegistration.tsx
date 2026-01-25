@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Container,
   Typography,
   Button,
   Table,
@@ -19,6 +18,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Paper,
 } from '@mui/material';
 import {
   Settings as SettingsIcon,
@@ -35,8 +35,15 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useRegistration, User } from '../contexts/RegistrationContext';
+import Sidebar from '../components/Layout/Sidebar';
 
-const UserRegistration: React.FC = () => {
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface UserRegistrationProps {
+  onNavigate?: (page: PageType) => void;
+}
+
+const UserRegistration: React.FC<UserRegistrationProps> = ({ onNavigate }) => {
   const { users, setUsers, companyCode } = useRegistration();
 
   const [searchExpanded, setSearchExpanded] = useState(false);
@@ -182,14 +189,23 @@ const UserRegistration: React.FC = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: '#F6F6F6', minHeight: 'calc(100vh - 56px)', py: 3 }}>
-      <Container maxWidth="xl">
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      <Sidebar currentPage="user" onNavigate={onNavigate} />
+
+      <Box sx={{ flex: 1, p: 3 }}>
         {/* ヘッダー */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box
               sx={{
-                bgcolor: '#0078C8',
+                bgcolor: '#007AFF',
                 borderRadius: '50%',
                 width: 48,
                 height: 48,
@@ -201,7 +217,7 @@ const UserRegistration: React.FC = () => {
             >
               <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
             </Box>
-            <Typography variant="h4" sx={{ color: '#1C2026', fontWeight: 600 }}>
+            <Typography variant="h5" sx={{ color: '#1D1D1F', fontWeight: 600 }}>
               ユーザー登録
             </Typography>
           </Box>
@@ -211,9 +227,10 @@ const UserRegistration: React.FC = () => {
             startIcon={<AddIcon />}
             onClick={handleOpenDialog}
             sx={{
-              bgcolor: '#42A5F5',
+              bgcolor: '#007AFF',
               color: '#FFFFFF',
-              '&:hover': { bgcolor: '#1E88E5' },
+              '&:hover': { bgcolor: '#0051D5' },
+              borderRadius: '8px',
             }}
           >
             新規登録
@@ -234,7 +251,14 @@ const UserRegistration: React.FC = () => {
         <Accordion
           expanded={searchExpanded}
           onChange={() => setSearchExpanded(!searchExpanded)}
-          sx={{ mb: 2, bgcolor: '#E0E0E0' }}
+          sx={{
+            mb: 2,
+            background: 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '16px',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            boxShadow: 'none',
+          }}
         >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography sx={{ fontWeight: 600 }}>
@@ -252,10 +276,19 @@ const UserRegistration: React.FC = () => {
         </Accordion>
 
         {/* テーブル */}
-        <TableContainer sx={{ bgcolor: '#FFFFFF' }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            background: 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '16px',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            boxShadow: 'none',
+          }}
+        >
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#B0BEC5' }}>
+              <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                 <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 80 }}>修正</TableCell>
                 <TableCell sx={{ color: '#1C2026', fontWeight: 600, width: 80 }}>削除</TableCell>
                 <TableCell sx={{ color: '#1C2026', fontWeight: 600 }}>利用者ID</TableCell>
@@ -272,7 +305,7 @@ const UserRegistration: React.FC = () => {
                   <TableCell>
                     <IconButton
                       onClick={() => handleEditUser(user)}
-                      sx={{ color: '#42A5F5' }}
+                      sx={{ color: '#007AFF' }}
                     >
                       <EditIcon />
                     </IconButton>
@@ -280,7 +313,7 @@ const UserRegistration: React.FC = () => {
                   <TableCell>
                     <IconButton
                       onClick={() => handleDeleteUser(user.id)}
-                      sx={{ color: '#42A5F5' }}
+                      sx={{ color: '#007AFF' }}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -464,9 +497,10 @@ const UserRegistration: React.FC = () => {
             <Button
               onClick={handleCloseDialog}
               sx={{
-                bgcolor: '#42A5F5',
+                bgcolor: '#007AFF',
                 color: '#FFFFFF',
-                '&:hover': { bgcolor: '#1E88E5' },
+                '&:hover': { bgcolor: '#0051D5' },
+                borderRadius: '8px',
               }}
             >
               キャンセル
@@ -476,9 +510,10 @@ const UserRegistration: React.FC = () => {
                 onClick={handleSaveUser}
                 variant="contained"
                 sx={{
-                  bgcolor: '#42A5F5',
+                  bgcolor: '#007AFF',
                   color: '#FFFFFF',
-                  '&:hover': { bgcolor: '#1E88E5' },
+                  '&:hover': { bgcolor: '#0051D5' },
+                  borderRadius: '8px',
                 }}
               >
                 保存
@@ -488,9 +523,10 @@ const UserRegistration: React.FC = () => {
               onClick={handleSaveUser}
               variant="contained"
               sx={{
-                bgcolor: '#42A5F5',
+                bgcolor: '#007AFF',
                 color: '#FFFFFF',
-                '&:hover': { bgcolor: '#1E88E5' },
+                '&:hover': { bgcolor: '#0051D5' },
+                borderRadius: '8px',
               }}
             >
               {editingUser ? '保存' : '保存して招待メールを送る'}
@@ -523,7 +559,7 @@ const UserRegistration: React.FC = () => {
 
             <Box sx={{ bgcolor: '#F9F9F9', border: '1px solid #E0E0E0', borderRadius: 1, p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <EmailIcon sx={{ color: '#0078C8', mr: 1.5, fontSize: 24 }} />
+                <EmailIcon sx={{ color: '#007AFF', mr: 1.5, fontSize: 24 }} />
                 <Box>
                   <Typography sx={{ fontSize: '0.875rem', color: '#666666', mb: 0.5 }}>
                     Email
@@ -535,7 +571,7 @@ const UserRegistration: React.FC = () => {
               </Box>
 
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <PhoneIcon sx={{ color: '#0078C8', mr: 1.5, fontSize: 24 }} />
+                <PhoneIcon sx={{ color: '#007AFF', mr: 1.5, fontSize: 24 }} />
                 <Box>
                   <Typography sx={{ fontSize: '0.875rem', color: '#666666', mb: 0.5 }}>
                     電話番号
@@ -558,17 +594,18 @@ const UserRegistration: React.FC = () => {
               onClick={() => setOpenLimitDialog(false)}
               variant="contained"
               sx={{
-                bgcolor: '#42A5F5',
+                bgcolor: '#007AFF',
                 color: '#FFFFFF',
-                '&:hover': { bgcolor: '#1E88E5' },
+                '&:hover': { bgcolor: '#0051D5' },
+                borderRadius: '8px',
               }}
             >
               閉じる
             </Button>
           </DialogActions>
         </Dialog>
-      </Container>
-    </Box>
+      </Box>
+    </div>
   );
 };
 

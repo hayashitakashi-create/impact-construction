@@ -20,6 +20,13 @@ import {
   DragIndicator as DragIndicatorIcon,
   Save as SaveIcon,
 } from '@mui/icons-material';
+import Sidebar from '../components/Layout/Sidebar';
+
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface SiteExpenseSettingsProps {
+  onNavigate?: (page: PageType) => void;
+}
 
 interface SiteExpenseItem {
   id: number;
@@ -28,7 +35,7 @@ interface SiteExpenseItem {
   表示: '表示' | '非表示';
 }
 
-const SiteExpenseSettings: React.FC = () => {
+const SiteExpenseSettings: React.FC<SiteExpenseSettingsProps> = ({ onNavigate }) => {
   // 初期データ（UIスクリーンショットに基づく12項目）
   const [items, setItems] = useState<SiteExpenseItem[]>([
     { id: 1, 科目番号: 1, 科目名: '給与人件費', 表示: '表示' },
@@ -95,112 +102,130 @@ const SiteExpenseSettings: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* ページタイトルと保存ボタン */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      <Sidebar currentPage="site-expense" onNavigate={onNavigate} />
+
+      <Box sx={{ flex: 1, p: 3 }}>
+        {/* ページタイトルと保存ボタン */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box
+              sx={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                bgcolor: '#007AFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: 2,
+              }}
+            >
+              <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
+            </Box>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: '#1D1D1F' }}>
+              現場経費科目設定
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            startIcon={<SaveIcon />}
+            onClick={handleSave}
             sx={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              bgcolor: '#0078C8',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mr: 2,
+              bgcolor: '#007AFF',
+              '&:hover': {
+                bgcolor: '#0051D5',
+              },
+              textTransform: 'none',
+              fontSize: '0.875rem',
+              borderRadius: '8px',
             }}
           >
-            <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 24 }} />
-          </Box>
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#1C2026' }}>
-            現場経費科目設定
-          </Typography>
+            保存
+          </Button>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<SaveIcon />}
-          onClick={handleSave}
-          sx={{
-            bgcolor: '#5DADE2',
-            '&:hover': {
-              bgcolor: '#3498DB',
-            },
-            textTransform: 'none',
-            fontSize: '0.875rem',
-          }}
-        >
-          保存
-        </Button>
-      </Box>
 
-      {/* テーブル */}
-      <Paper sx={{ borderRadius: 1, overflow: 'hidden' }}>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ bgcolor: '#E8E8E8' }}>
-                <TableCell sx={{ fontWeight: 600, width: 60, fontSize: '0.875rem' }}>
-                  科目<br />番号
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600, fontSize: '0.875rem' }}>
-                  科目名
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600, width: 180, fontSize: '0.875rem' }}>
-                  表示
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {items.map((item) => (
-                <TableRow
-                  key={item.id}
-                  draggable
-                  onDragStart={() => handleDragStart(item)}
-                  onDragOver={handleDragOver}
-                  onDrop={() => handleDrop(item)}
-                  sx={{
-                    '&:hover': { bgcolor: '#F9F9F9' },
-                    cursor: 'grab',
-                    '&:active': { cursor: 'grabbing' },
-                  }}
-                >
-                  <TableCell sx={{ fontSize: '0.875rem' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <IconButton size="small" sx={{ color: '#999999', cursor: 'grab' }}>
-                        <DragIndicatorIcon fontSize="small" />
-                      </IconButton>
-                      {item.科目番号}
-                    </Box>
+        {/* テーブル */}
+        <Paper sx={{
+          borderRadius: 1,
+          overflow: 'hidden',
+          background: 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(10px)',
+          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        }}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#E3F2FD' }}>
+                  <TableCell sx={{ fontWeight: 600, width: 60, fontSize: '0.875rem' }}>
+                    科目<br />番号
                   </TableCell>
-                  <TableCell sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
-                    {item.科目名}
+                  <TableCell sx={{ fontWeight: 600, fontSize: '0.875rem' }}>
+                    科目名
                   </TableCell>
-                  <TableCell>
-                    <RadioGroup
-                      row
-                      value={item.表示}
-                      onChange={(e) => handleDisplayChange(item.id, e.target.value as '表示' | '非表示')}
-                    >
-                      <FormControlLabel
-                        value="表示"
-                        control={<Radio size="small" />}
-                        label={<Typography sx={{ fontSize: '0.875rem' }}>表示</Typography>}
-                      />
-                      <FormControlLabel
-                        value="非表示"
-                        control={<Radio size="small" />}
-                        label={<Typography sx={{ fontSize: '0.875rem' }}>非表示</Typography>}
-                      />
-                    </RadioGroup>
+                  <TableCell sx={{ fontWeight: 600, width: 180, fontSize: '0.875rem' }}>
+                    表示
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-    </Box>
+              </TableHead>
+              <TableBody>
+                {items.map((item) => (
+                  <TableRow
+                    key={item.id}
+                    draggable
+                    onDragStart={() => handleDragStart(item)}
+                    onDragOver={handleDragOver}
+                    onDrop={() => handleDrop(item)}
+                    sx={{
+                      '&:hover': { bgcolor: '#F9F9F9' },
+                      cursor: 'grab',
+                      '&:active': { cursor: 'grabbing' },
+                    }}
+                  >
+                    <TableCell sx={{ fontSize: '0.875rem' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <IconButton size="small" sx={{ color: '#007AFF', cursor: 'grab' }}>
+                          <DragIndicatorIcon fontSize="small" />
+                        </IconButton>
+                        {item.科目番号}
+                      </Box>
+                    </TableCell>
+                    <TableCell sx={{ fontSize: '0.875rem', fontWeight: 500 }}>
+                      {item.科目名}
+                    </TableCell>
+                    <TableCell>
+                      <RadioGroup
+                        row
+                        value={item.表示}
+                        onChange={(e) => handleDisplayChange(item.id, e.target.value as '表示' | '非表示')}
+                      >
+                        <FormControlLabel
+                          value="表示"
+                          control={<Radio size="small" />}
+                          label={<Typography sx={{ fontSize: '0.875rem' }}>表示</Typography>}
+                        />
+                        <FormControlLabel
+                          value="非表示"
+                          control={<Radio size="small" />}
+                          label={<Typography sx={{ fontSize: '0.875rem' }}>非表示</Typography>}
+                        />
+                      </RadioGroup>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Box>
+    </div>
   );
 };
 

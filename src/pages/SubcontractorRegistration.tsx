@@ -35,6 +35,13 @@ import {
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
 } from '@mui/icons-material';
+import Sidebar from '../components/Layout/Sidebar';
+
+type PageType = 'dashboard' | 'construction-list' | 'estimate-list' | 'construction-registration' | 'construction-detail' | 'construction-category' | 'construction-type' | 'building-usage' | 'client' | 'user' | 'company' | 'subcontractor-bulk' | 'subcontractor' | 'work-type' | 'material' | 'lease-item' | 'common-temporary' | 'site-expense' | 'screen-permission' | 'screen-permission-template' | 'workflow-template' | 'accounting-integration';
+
+interface SubcontractorRegistrationProps {
+  onNavigate?: (page: PageType) => void;
+}
 
 interface Subcontractor {
   id: number;
@@ -52,7 +59,7 @@ interface Subcontractor {
   登録済み: boolean;
 }
 
-const SubcontractorRegistration: React.FC = () => {
+const SubcontractorRegistration: React.FC<SubcontractorRegistrationProps> = ({ onNavigate }) => {
   const [tabValue, setTabValue] = useState(0);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [prefectureFilter, setPrefectureFilter] = useState('');
@@ -271,104 +278,118 @@ const SubcontractorRegistration: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* ページタイトルと新規登録ボタン */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              bgcolor: '#0078C8',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mr: 2,
-            }}
-          >
-            <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 24 }} />
-          </Box>
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#1C2026' }}>
-            外注業者登録
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenDialog()}
-          sx={{
-            bgcolor: '#5DADE2',
-            '&:hover': {
-              bgcolor: '#3498DB',
-            },
-            textTransform: 'none',
-            fontSize: '0.875rem',
-          }}
-        >
-          + 新規登録
-        </Button>
-      </Box>
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom right, #F8F9FA 0%, #E8EAF6 50%, #F3E5F5 100%)",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+      }}
+    >
+      <Sidebar currentPage="subcontractor" onNavigate={onNavigate} />
 
-      {/* タブと出力ボタン */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+      <Box sx={{ flex: 1, p: 3 }}>
+        {/* ページタイトルと新規登録ボタン */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box
+              sx={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                bgcolor: '#007AFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: 2,
+              }}
+            >
+              <SettingsIcon sx={{ color: '#FFFFFF', fontSize: 28 }} />
+            </Box>
+            <Typography variant="h5" sx={{ fontWeight: 600, color: '#1D1D1F' }}>
+              外注業者登録
+            </Typography>
+          </Box>
           <Button
-            variant={tabValue === 0 ? 'contained' : 'outlined'}
-            onClick={() => setTabValue(0)}
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenDialog()}
             sx={{
-              bgcolor: tabValue === 0 ? '#5DADE2' : 'transparent',
-              color: tabValue === 0 ? '#FFFFFF' : '#666666',
-              borderColor: '#CCCCCC',
+              bgcolor: '#007AFF',
+              '&:hover': {
+                bgcolor: '#0051D5',
+              },
               textTransform: 'none',
               fontSize: '0.875rem',
-              px: 3,
-              '&:hover': {
-                bgcolor: tabValue === 0 ? '#3498DB' : 'rgba(93, 173, 226, 0.1)',
-              },
+              borderRadius: '8px',
             }}
           >
-            未登録
-          </Button>
-          <Button
-            variant={tabValue === 1 ? 'contained' : 'outlined'}
-            onClick={() => setTabValue(1)}
-            sx={{
-              bgcolor: tabValue === 1 ? '#FFFFFF' : 'transparent',
-              color: tabValue === 1 ? '#666666' : '#666666',
-              borderColor: '#CCCCCC',
-              textTransform: 'none',
-              fontSize: '0.875rem',
-              px: 3,
-              '&:hover': {
-                bgcolor: tabValue === 1 ? '#FFFFFF' : 'rgba(0, 0, 0, 0.05)',
-              },
-            }}
-          >
-            登録済
+            + 新規登録
           </Button>
         </Box>
-        {tabValue === 1 && (
-          <Button
-            variant="outlined"
-            startIcon={<GetAppIcon />}
-            onClick={handleDownloadCSV}
-            sx={{
-              textTransform: 'none',
-              borderColor: '#8BC34A',
-              color: '#8BC34A',
-              bgcolor: '#FFFFFF',
-              '&:hover': {
-                borderColor: '#7CB342',
-                bgcolor: '#F1F8E9',
-              },
-              fontSize: '0.875rem',
-            }}
-          >
-            出　力
-          </Button>
-        )}
-      </Box>
+
+        {/* タブと出力ボタン */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button
+              variant={tabValue === 0 ? 'contained' : 'outlined'}
+              onClick={() => setTabValue(0)}
+              sx={{
+                bgcolor: tabValue === 0 ? '#007AFF' : 'transparent',
+                color: tabValue === 0 ? '#FFFFFF' : '#666666',
+                borderColor: '#CCCCCC',
+                textTransform: 'none',
+                fontSize: '0.875rem',
+                px: 3,
+                borderRadius: '8px',
+                '&:hover': {
+                  bgcolor: tabValue === 0 ? '#0051D5' : 'rgba(0, 122, 255, 0.1)',
+                },
+              }}
+            >
+              未登録
+            </Button>
+            <Button
+              variant={tabValue === 1 ? 'contained' : 'outlined'}
+              onClick={() => setTabValue(1)}
+              sx={{
+                bgcolor: tabValue === 1 ? '#FFFFFF' : 'transparent',
+                color: tabValue === 1 ? '#666666' : '#666666',
+                borderColor: '#CCCCCC',
+                textTransform: 'none',
+                fontSize: '0.875rem',
+                px: 3,
+                borderRadius: '8px',
+                '&:hover': {
+                  bgcolor: tabValue === 1 ? '#FFFFFF' : 'rgba(0, 0, 0, 0.05)',
+                },
+              }}
+            >
+              登録済
+            </Button>
+          </Box>
+          {tabValue === 1 && (
+            <Button
+              variant="outlined"
+              startIcon={<GetAppIcon />}
+              onClick={handleDownloadCSV}
+              sx={{
+                textTransform: 'none',
+                borderColor: '#8BC34A',
+                color: '#8BC34A',
+                bgcolor: '#FFFFFF',
+                '&:hover': {
+                  borderColor: '#7CB342',
+                  bgcolor: '#F1F8E9',
+                },
+                fontSize: '0.875rem',
+                borderRadius: '8px',
+              }}
+            >
+              出　力
+            </Button>
+          )}
+        </Box>
 
       {/* 検索条件 */}
       {tabValue === 1 && (
@@ -392,7 +413,7 @@ const SubcontractorRegistration: React.FC = () => {
             </Typography>
             <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
               {searchOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              <Typography variant="body2" sx={{ color: '#0078C8', ml: 0.5 }}>
+              <Typography variant="body2" sx={{ color: '#007AFF', ml: 0.5 }}>
                 （{searchOpen ? '閉じる' : '開く'}）
               </Typography>
             </Box>
@@ -432,13 +453,19 @@ const SubcontractorRegistration: React.FC = () => {
                 <Button
                   variant="outlined"
                   startIcon={<SearchIcon />}
-                  sx={{ textTransform: 'none' }}
+                  sx={{
+                    textTransform: 'none',
+                    borderRadius: '8px',
+                  }}
                 >
                   検索
                 </Button>
                 <Button
                   variant="outlined"
-                  sx={{ textTransform: 'none' }}
+                  sx={{
+                    textTransform: 'none',
+                    borderRadius: '8px',
+                  }}
                   onClick={() => {
                     setSearchKeyword('');
                     setPrefectureFilter('');
@@ -452,12 +479,21 @@ const SubcontractorRegistration: React.FC = () => {
         </Box>
       )}
 
-      {/* テーブル */}
-      <Paper sx={{ borderRadius: 1, overflow: 'hidden' }}>
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow sx={{ bgcolor: '#E8E8E8' }}>
+        {/* テーブル */}
+        <Paper
+          sx={{
+            borderRadius: '16px',
+            overflow: 'hidden',
+            background: 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            boxShadow: 'none',
+          }}
+        >
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#E3F2FD' }}>
                 <TableCell sx={{ fontWeight: 600, width: 60, fontSize: '0.75rem' }}>修正</TableCell>
                 <TableCell sx={{ fontWeight: 600, width: 60, fontSize: '0.75rem' }}>削除</TableCell>
                 <TableCell sx={{ fontWeight: 600, fontSize: '0.75rem' }}>業者名</TableCell>
@@ -470,68 +506,73 @@ const SubcontractorRegistration: React.FC = () => {
                 <TableCell sx={{ fontWeight: 600, fontSize: '0.75rem' }}>Email</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {paginatedList.map((subcontractor) => (
-                <TableRow key={subcontractor.id} sx={{ '&:hover': { bgcolor: '#F9F9F9' } }}>
-                  <TableCell>
-                    <IconButton
-                      size="small"
-                      onClick={() => tabValue === 0 ? handleRegisterExisting(subcontractor) : handleOpenDialog(subcontractor)}
-                      sx={{ color: '#0078C8' }}
-                    >
-                      <EditIcon fontSize="small" />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleDelete(subcontractor.id)}
-                      sx={{ color: '#5DADE2' }}
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.業者名}</TableCell>
-                  <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.業者コード}</TableCell>
-                  <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.ふりがな}</TableCell>
-                  <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.部署名}</TableCell>
-                  <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.郵便番号}</TableCell>
-                  <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.住所}</TableCell>
-                  <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.住所2}</TableCell>
-                  <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.Email}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              <TableBody>
+                {paginatedList.map((subcontractor) => (
+                  <TableRow key={subcontractor.id} sx={{ '&:hover': { bgcolor: '#F9F9F9' } }}>
+                    <TableCell>
+                      <IconButton
+                        size="small"
+                        onClick={() => tabValue === 0 ? handleRegisterExisting(subcontractor) : handleOpenDialog(subcontractor)}
+                        sx={{ color: '#007AFF' }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDelete(subcontractor.id)}
+                        sx={{ color: '#007AFF' }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.業者名}</TableCell>
+                    <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.業者コード}</TableCell>
+                    <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.ふりがな}</TableCell>
+                    <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.部署名}</TableCell>
+                    <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.郵便番号}</TableCell>
+                    <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.住所}</TableCell>
+                    <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.住所2}</TableCell>
+                    <TableCell sx={{ fontSize: '0.875rem' }}>{subcontractor.Email}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-        {/* ページネーション */}
-        {totalPages > 1 && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', p: 2, bgcolor: '#FAFAFA' }}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-              showFirstButton
-              showLastButton
-            />
-          </Box>
-        )}
-      </Paper>
+          {/* ページネーション */}
+          {totalPages > 1 && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 2, bgcolor: '#FAFAFA' }}>
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                color="primary"
+                showFirstButton
+                showLastButton
+              />
+            </Box>
+          )}
+        </Paper>
 
-      {/* 新規登録/編集ダイアログ */}
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        maxWidth="md"
-        fullWidth
-        PaperProps={{
-          sx: {
-            maxHeight: '90vh',
-          },
-        }}
-      >
+        {/* 新規登録/編集ダイアログ */}
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          maxWidth="md"
+          fullWidth
+          PaperProps={{
+            sx: {
+              maxHeight: '90vh',
+              background: 'rgba(255, 255, 255, 0.7)',
+              backdropFilter: 'blur(10px)',
+              borderRadius: '16px',
+              border: '1px solid rgba(0, 0, 0, 0.08)',
+              boxShadow: 'none',
+            },
+          }}
+        >
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
             {editingSubcontractor ? '編集' : '新規登録'}
@@ -739,44 +780,55 @@ const SubcontractorRegistration: React.FC = () => {
             </FormControl>
           </Box>
         </DialogContent>
-        <DialogActions sx={{ p: 2 }}>
-          <Button
-            onClick={handleCloseDialog}
-            variant="contained"
-            sx={{
-              bgcolor: '#5DADE2',
-              '&:hover': {
-                bgcolor: '#3498DB',
-              },
-              textTransform: 'none',
-            }}
-          >
-            キャンセル
-          </Button>
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            sx={{
-              bgcolor: '#D3E8F5',
-              color: '#666666',
-              '&:hover': {
-                bgcolor: '#B8D9ED',
-              },
-              textTransform: 'none',
-            }}
-          >
-            登録
-          </Button>
-        </DialogActions>
-      </Dialog>
+          <DialogActions sx={{ p: 2 }}>
+            <Button
+              onClick={handleCloseDialog}
+              variant="contained"
+              sx={{
+                bgcolor: '#007AFF',
+                '&:hover': {
+                  bgcolor: '#0051D5',
+                },
+                textTransform: 'none',
+                borderRadius: '8px',
+              }}
+            >
+              キャンセル
+            </Button>
+            <Button
+              onClick={handleSave}
+              variant="contained"
+              sx={{
+                bgcolor: '#007AFF',
+                color: '#FFFFFF',
+                '&:hover': {
+                  bgcolor: '#0051D5',
+                },
+                textTransform: 'none',
+                borderRadius: '8px',
+              }}
+            >
+              登録
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-      {/* 既存業者に本登録ダイアログ */}
-      <Dialog
-        open={openExistingDialog}
-        onClose={() => setOpenExistingDialog(false)}
-        maxWidth="xs"
-        fullWidth
-      >
+        {/* 既存業者に本登録ダイアログ */}
+        <Dialog
+          open={openExistingDialog}
+          onClose={() => setOpenExistingDialog(false)}
+          maxWidth="xs"
+          fullWidth
+          PaperProps={{
+            sx: {
+              background: 'rgba(255, 255, 255, 0.7)',
+              backdropFilter: 'blur(10px)',
+              borderRadius: '16px',
+              border: '1px solid rgba(0, 0, 0, 0.08)',
+              boxShadow: 'none',
+            },
+          }}
+        >
         <DialogTitle>新規登録</DialogTitle>
         <DialogContent>
           <Typography variant="body2" sx={{ mb: 2, color: '#666666' }}>
@@ -808,22 +860,39 @@ const SubcontractorRegistration: React.FC = () => {
               variant="contained"
               onClick={handleCheckExistingCode}
               fullWidth
-              sx={{ mt: 2, textTransform: 'none' }}
+              sx={{
+                mt: 2,
+                textTransform: 'none',
+                borderRadius: '8px',
+              }}
             >
               登録情報で上書き
             </Button>
           )}
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={() => setOpenExistingDialog(false)} variant="outlined">
+          <Button
+            onClick={() => setOpenExistingDialog(false)}
+            variant="outlined"
+            sx={{
+              borderRadius: '8px',
+            }}
+          >
             キャンセル
           </Button>
-          <Button onClick={() => setOpenExistingDialog(false)} variant="contained">
+          <Button
+            onClick={() => setOpenExistingDialog(false)}
+            variant="contained"
+            sx={{
+              borderRadius: '8px',
+            }}
+          >
             登録
           </Button>
         </DialogActions>
-      </Dialog>
-    </Box>
+        </Dialog>
+      </Box>
+    </div>
   );
 };
 

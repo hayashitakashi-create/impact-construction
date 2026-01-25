@@ -112,6 +112,10 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onNavigate }) => {
                 onClick={() => {
                   if (isSettings) {
                     setSettingsOpen(!settingsOpen);
+                    // その他・設定をクリックしたときにユーザー登録画面に遷移
+                    if (onNavigate && !settingsOpen) {
+                      onNavigate('user');
+                    }
                   } else if (item.page && onNavigate) {
                     onNavigate(item.page);
                   }
